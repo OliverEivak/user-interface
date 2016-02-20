@@ -1,0 +1,23 @@
+<div id="modalLogin" class="modal">
+  <div class="modal-content">
+      <h4>Log in</h4>
+      <form class="col s12">
+        <div class="row">
+          <div class="input-field col s12">
+            <input id="username" type="text" class="validate" data-ng-model="loginForm.username" data-ng-keyup="$event.keyCode === 13 && submitForm()">
+            <label for="username">Username</label>
+          </div>
+        </div>
+        <div class="row">
+          <div class="input-field col s12">
+            <input id="password" type="password" class="validate" data-ng-model="loginForm.password" data-ng-keyup="$event.keyCode === 13 && submitForm()">
+            <label for="password">Password</label>
+          </div>
+        </div>
+      </form>
+  </div>
+  <div class="modal-footer">
+      <a href="#!" class="modal-action modal-close waves-effect waves-red btn-flat" data-ng-click="cancel()" id="button-cancel">Cancel</a>
+      <a href="#!" class="modal-action modal-close waves-effect waves-green btn-flat" data-ng-click="login()" id="button-login">Log in</a>
+  </div>
+</div>
