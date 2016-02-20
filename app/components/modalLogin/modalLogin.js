@@ -2,25 +2,56 @@
 
 angular.module('myApp.modalLogin', [])
 
-.directive('modalLogin', [function($timeout) {
-    return {
-        scope: true,
-        templateUrl: 'components/modalLogin/modalLogin.html',
-        controller: function($scope, $timeout) {
-            $scope.loginForm = {};
+    .directive('modalLogin', ['$timeout', '$location', 'authenticatedUserService',
+        function($timeout, $location, authenticatedUserService) {
+            return {
+                scope: true,
+                templateUrl: 'components/modalLogin/modalLogin.html',
+                controller: function($scope) {
+                    $scope.loginForm = {};
 
-            $scope.submitForm = function() {
-                console.log('submitForm: click login button. user ' + $scope.loginForm.username + ' pw ' + $scope.loginForm.password);
+                    $scope.submitForm = function() {
+                        $timeout(function () {
+                            angular.element('#button-login').triggerHandler('click');
+                        });
+                    };
 
-                $timeout(function () {
-                    angular.element('#button-login').triggerHandler('click');
-                });
-            };
+                    $scope.login = function() {
+                        $scope.loginFailed = false;
+                        var user = findUserByUsernameAndPassword($scope.loginForm.username, $scope.loginForm.password);
 
-            $scope.cancel = function() {
-                $scope.loginForm = {};
-            };
-        }
-    }
-}]);
+                        if (user) {
+                            var authenticatedUser = {
+                                'user': user
+                            };
+                            authenticatedUserService.setAuthenticatedUser(authenticatedUser);
+
+                            $scope.loginForm = {};
+
+                            angular.element('#modalLogin').closeModal();
+                            $location.url('/');
+                        } else {
+                            $scope.loginFailed = true;
+                        }
+                    };
+
+                    $scope.cancel = function() {
+                        $scope.loginForm = {};
+                    };
+
+                    function findUserByUsernameAndPassword(username, password) {
+                        var users = JSON.parse(localStorage.getItem("users"));
+
+                        if (users) {
+                            for (var i = 0; i < users.length; i++) {
+                                if (users[i].username === username && users[i].password === password) {
+                                    return users[i];
+                                }
+                            }
+                        }
+                    }
+
+                }
+            }
+        }]);
 

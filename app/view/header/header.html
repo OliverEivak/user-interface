@@ -1,20 +1,24 @@
-<!-- Modal Structure -->
+<!-- Modal Structures -->
 <div modal-login></div>
+<div modal-register></div>
 
 <!-- Navigation -->
 <nav class="white" role="navigation">
-  <div class="nav-wrapper container">
-    <a id="logo-container" href="#" class="brand-logo">Logo</a>
-    <ul class="right hide-on-med-and-down">
-      <li><a href="#/view1">view1</a></li>
-      <li><a href="#/view2">view2</a></li>
-      <li><a ng-href="#modalLogin" modal ng-click="focusLogin()">Log in</a></li>
-    </ul>
+    <div class="nav-wrapper container">
+        <a id="logo-container" href="#" class="brand-logo"><img src="img/video128x128.png" alt="logo" />Study Information System</a>
+        <ul class="right hide-on-med-and-down">
+            <li ng-class="{active: isPage('/view1')}"><a href="#/view1">Home</a></li>
+            <!--li ng-class="{active: isPage('/view2')}"><a href="#/view2">view2</a></li-->
+            <li data-ng-if="!isLoggedIn()"><a ng-href="#modalLogin" modal ng-click="focusLogin()">Log in<i class="material-icons right">input</i></a></li>
+            <li data-ng-if="!isLoggedIn()" ng-class="{active: isPage('/register')}"><a href="#register">Register</a></li>
+            <li data-ng-if="isLoggedIn()"><a ng-href="" ng-click="logout()">Log out</a></li>
+            <!-- TODO: profile info to show that user is logged in -->
+        </ul>
 
-    <ul id="nav-mobile" class="side-nav">
-      <li><a href="#/view1">view1</a></li>
-      <li><a href="#/view2">view2</a></li>
-    </ul>
-    <a href="#" data-activates="nav-mobile" class="button-collapse"><i class="material-icons">menu</i></a>
-  </div>
+        <ul id="nav-mobile" class="side-nav">
+            <li><a href="#/view1">view1</a></li>
+            <li><a href="#/view2">view2</a></li>
+        </ul>
+        <a href="#" data-activates="nav-mobile" class="button-collapse"><i class="material-icons">menu</i></a>
+    </div>
 </nav>

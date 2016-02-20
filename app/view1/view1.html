@@ -52,10 +52,10 @@
                     <ul class="collection">
                         <li data-ng-if="week.links.length === 0 && !linkForm.isVisible" class="collection-item">
                             <i class="material-icons left">code</i>
-                            <a href="" class="right" data-ng-click="toggleLinkForm(link)">
+                            <a href="" class="right" data-ng-click="toggleLinkForm()">
                                 <i class="material-icons">playlist_add</i>
                             </a>
-                            <p>Add link</p>
+                            <p><a href="" data-ng-click="toggleLinkForm()">Add link</a></p>
                         </li>
                         <li ng-repeat="link in week.links" class="collection-item">
                             <i class="material-icons left">code</i>
