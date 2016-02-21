@@ -5,13 +5,14 @@ angular.module('myApp', [
     'ngRoute',
     'ui.materialize',
     'myApp.services',
-    'myApp.view1',
-    'myApp.view2',
+    'myApp.home',
     'myApp.version',
-    'myApp.modalLogin',
+    'myApp.login',
     'myApp.register',
-    'myApp.header'
+    'myApp.header',
+    'myApp.courses',
+    'myApp.sidebar'
 ]).
     config(['$routeProvider', function($routeProvider) {
-        $routeProvider.otherwise({redirectTo: '/view1'});
+        $routeProvider.otherwise({redirectTo: '/home'});
     }]);

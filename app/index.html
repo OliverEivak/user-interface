@@ -6,7 +6,7 @@
 <head>
   <meta charset="utf-8">
   <meta http-equiv="X-UA-Compatible" content="IE=edge">
-  <title>Kasutajaliides</title>
+  <title>Study Information System</title>
   <meta name="description" content="">
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <link rel="stylesheet" href="bower_components/html5-boilerplate/dist/css/normalize.css">
@@ -14,13 +14,17 @@
   <link href="http://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
   <link rel="stylesheet" href="bower_components/materialize/dist/css/materialize.css" media="screen,projection"/>
   <link rel="stylesheet" href="app.css">
+  <link rel="icon" type="image/png" sizes="32x32" href="favicon-32x32.png">
+  <link rel="icon" type="image/png" sizes="96x96" href="favicon-96x96.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="favicon-16x16.png">
   <script src="bower_components/html5-boilerplate/dist/js/vendor/modernizr-2.8.3.min.js"></script>
 </head>
 <body>
   <div header></div>
 
   <!--[if lt IE 7]>
-      <p class="browsehappy">You are using an <strong>outdated</strong> browser. Please <a href="http://browsehappy.com/">upgrade your browser</a> to improve your experience.</p>
+      <p class="browsehappy">You are using an <strong>outdated</strong> browser. Please
+        <a href="http://browsehappy.com/">upgrade your browser</a> to improve your experience.</p>
   <![endif]-->
 
   <div ng-view></div>
@@ -29,10 +33,15 @@
     <div class="container">
       <div class="row">
         <div class="col l6 s12">
-          <h5 class="white-text">Footer</h5>
-          <p class="grey-text text-lighten-4">This is something else. </p>
+          <h5 class="white-text">About</h5>
+          <p class="grey-text text-lighten-4">This is an assignment for
+            <a href="http://lambda.ee/wiki/Kasutajaliidesed" class="white-text text-lighten-3">
+            ITV0130 User Interfaces</a>. The assignment can be found
+            <a href="http://lambda.ee/wiki/UI_Protot%C3%BC%C3%BCp" class="white-text text-lighten-3">
+            here</a>. <a class="white-text text-lighten-3" href="https://angularjs.org/">AngularJS</a>
+            and <a class="white-text text-lighten-3" href="http://materializecss.com">Materialize</a> were used.</p>
         </div>
-        <div class="col l3 s12">
+        <!--div class="col l3 s12">
           <h5 class="white-text">Links</h5>
           <ul>
             <li><a class="white-text" href="#!">Link 1</a></li>
@@ -45,12 +54,12 @@
             <li><a class="white-text" href="#!">Link 1</a></li>
             <li><a class="white-text" href="#!">Link 2</a></li>
           </ul>
-        </div>
+        </div-->
       </div>
     </div>
     <div class="footer-copyright">
       <div class="container">
-      Angular seed app: v<span app-version></span>, using <a class="white-text text-lighten-3" href="http://materializecss.com">Materialize</a>
+      Oliver Eivak 2016.
       </div>
     </div>
   </footer>
@@ -66,13 +75,15 @@
   <script src="app.js"></script>
   <script src="services/services.js"></script>
   <script src="services/authenticatedUserService.js"></script>
-  <script src="view1/view1.js"></script>
-  <script src="view2/view2.js"></script>
+  <script src="services/serverCallService.js"></script>
   <script src="components/version/version.js"></script>
   <script src="components/version/version-directive.js"></script>
   <script src="components/version/interpolate-filter.js"></script>
-  <script src="components/modalLogin/modalLogin.js"></script>
+  <script src="components/login/login.js"></script>
+  <script src="components/sidebar/sidebar.js"></script>
+  <script src="view/home/home.js"></script>
   <script src="view/header/header.js"></script>
   <script src="view/register/register.js"></script>
+  <script src="view/courses/courses.js"></script>
 </body>
 </html>

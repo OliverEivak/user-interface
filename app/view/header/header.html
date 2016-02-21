@@ -7,18 +7,39 @@
     <div class="nav-wrapper container">
         <a id="logo-container" href="#" class="brand-logo"><img src="img/video128x128.png" alt="logo" />Study Information System</a>
         <ul class="right hide-on-med-and-down">
-            <li ng-class="{active: isPage('/view1')}"><a href="#/view1">Home</a></li>
-            <!--li ng-class="{active: isPage('/view2')}"><a href="#/view2">view2</a></li-->
-            <li data-ng-if="!isLoggedIn()"><a ng-href="#modalLogin" modal ng-click="focusLogin()">Log in<i class="material-icons right">input</i></a></li>
+            <li ng-class="{active: isPage('/home')}"><a href="#/home">Home</a></li>
+            <!-- TODO: profile info to show that user is logged in -->
+            <li data-ng-if="isLoggedIn()"><a href="">Welcome, {{user.username}}!</a></li>
             <li data-ng-if="!isLoggedIn()" ng-class="{active: isPage('/register')}"><a href="#register">Register</a></li>
             <li data-ng-if="isLoggedIn()"><a ng-href="" ng-click="logout()">Log out</a></li>
-            <!-- TODO: profile info to show that user is logged in -->
+            <!-- li data-ng-if="!isLoggedIn()"><a ng-href="#modalLogin" modal ng-click="focusLogin()">Log in<i class="material-icons right">input</i></a></li -->
         </ul>
 
+        <!-- TODO: mobile navigation, don't copy paste -->
         <ul id="nav-mobile" class="side-nav">
-            <li><a href="#/view1">view1</a></li>
-            <li><a href="#/view2">view2</a></li>
+            <li ng-class="{active: isPage('/home')}"><a href="#/home">Home</a></li>
+            <li data-ng-if="isLoggedIn()"><a href="">Welcome, {{user.username}}!</a></li>
+            <li data-ng-if="!isLoggedIn()" ng-class="{active: isPage('/register')}"><a href="#register">Register</a></li>
+            <li data-ng-if="isLoggedIn()"><a ng-href="" ng-click="logout()">Log out</a></li>
         </ul>
-        <a href="#" data-activates="nav-mobile" class="button-collapse"><i class="material-icons">menu</i></a>
+        <a href="#" class="button-collapse" data-activates="nav-mobile" data-sidenav="left" data-menuwidth="500" data-closeonclick="false">
+            <i class="material-icons md-dark">menu</i></a>
     </div>
 </nav>
+
+<div id="index-banner" class="parallax-container">
+    <div class="section no-pad-bot">
+        <div class="container">
+            <br><br>
+            <h1 data-ng-if="!isLoggedIn()" class="header center teal-text text-lighten-2">Study Information System</h1>
+            <div data-ng-if="!isLoggedIn()" class="row center">
+                <h5 class="header col s12 light">A project for ITV0130: User Interfaces</h5>
+            </div>
+            <!--div class="row center">
+                <a href="#/register" id="register-button" class="btn-large waves-effect waves-light teal lighten-1">Register</a>
+            </div-->
+            <br><br>
+        </div>
+    </div>
+    <div parallax><img src="img/sunrise-1116985.jpg" alt="Unsplashed background img 1"></div>
+</div>

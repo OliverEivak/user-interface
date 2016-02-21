@@ -8,6 +8,8 @@ angular.module('myApp.header', [])
                 scope: true,
                 templateUrl: 'view/header/header.html',
                 controller: function($scope, $timeout, $location) {
+                    $scope.user = {};
+                    $scope.user.username = getUsername();
 
                     $scope.isLoggedIn = authenticatedUserService.isAuthenticated;
 
@@ -25,6 +27,20 @@ angular.module('myApp.header', [])
                         authenticatedUserService.removeAuthenticatedUser();
                         $location.url('/');
                     };
+
+                    function getUsername() {
+                        var user = authenticatedUserService.getUser();
+                        if (user) {
+                            return user.username;
+                        }
+                    }
+
+                    // TODO: no scope here
+                    $scope.authenticationCallback = function() {
+                        $scope.user.username = getUsername();
+                    };
+
+                    authenticatedUserService.addAuthenticationCallback($scope.authenticationCallback);
                 }
             }
         }]);

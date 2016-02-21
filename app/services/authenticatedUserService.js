@@ -4,9 +4,15 @@ angular.module('myApp.services.authenticatedUserService', []).
     factory('authenticatedUserService', ['services', '$location',
         function ($location, services) {
 
+            var authenticationCallbacks = [];
+
             return {
                 setAuthenticatedUser: function (authenticatedUser) {
                     localStorage.setItem("authenticatedUser", JSON.stringify(authenticatedUser));
+
+                    for (var i = 0; i < authenticationCallbacks.length; i++) {
+                        authenticationCallbacks[i]();
+                    }
                 },
 
                 removeAuthenticatedUser: function () {
@@ -38,6 +44,10 @@ angular.module('myApp.services.authenticatedUserService', []).
 
                     return null;
                 },
+
+                addAuthenticationCallback: function(callback) {
+                    authenticationCallbacks.push(callback);
+                }
             };
 
         }]);
