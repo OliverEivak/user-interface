@@ -1,0 +1,26 @@
+<h4>Log in</h4>
+<div class="card-panel red lighten-2 valign-wrapper" data-ng-if="loginFailed">
+    <i class="small material-icons left md-light">error_outline</i>
+    <span class="white-text">Wrong username and/or password.</span>
+</div>
+<form name="formLogin">
+    <div class="row">
+        <div input-field class="col s12">
+            <input id="login-username" type="text" data-ng-model="loginForm.username"
+                   data-ng-keyup="$event.keyCode === 13 && login()" required="" aria-required="true">
+            <label for="login-username">Username</label>
+        </div>
+    </div>
+    <div class="row">
+        <div input-field class="col s12">
+            <input id="login-password" type="password" data-ng-model="loginForm.password"
+                   data-ng-keyup="$event.keyCode === 13 && login()" required="" aria-required="true">
+            <label for="login-password">Password</label>
+        </div>
+    </div>
+    <div class="right">
+        <button class="btn waves-effect waves-light" type="submit" name="button-login" data-ng-click="login()">
+            Log in <i class="material-icons right">send</i>
+        </button>
+    </div>
+</form>
