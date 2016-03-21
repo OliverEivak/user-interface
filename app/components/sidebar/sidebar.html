@@ -1,8 +1,6 @@
 <div class="collection">
-    <a href="#/" class="collection-item" ng-class="{active: isNotCoursePage()}">Feed: All enrolled courses</a>
-    <a data-ng-repeat="course in data.courses" ng-href="#/home/courses/{{course.code}}" class="collection-item"
-       ng-class="{active: isCoursePage(course)}">
-        {{course.code}} {{course.name}}
+    <a data-ng-repeat="gradeGroup in data.gradeGroups" ng-href="#/student/gradeGroups/{{gradeGroup.id}}" class="collection-item"
+       ng-class="{active: isGradeGroupPage(gradeGroup)}">
+        {{gradeGroup.name}}
     </a>
 </div>
-<a href="#/courses">Manage courses</a>

@@ -2,8 +2,8 @@
 
 angular.module('myApp.header', [])
 
-    .directive('header', ['$timeout', '$location', 'authenticatedUserService',
-        function($timeout, $location, authenticatedUserService) {
+    .directive('header', ['$timeout', '$location', 'authenticationService',
+        function($timeout, $location, authenticationService) {
             return {
                 scope: true,
                 templateUrl: 'view/header/header.html',
@@ -11,7 +11,7 @@ angular.module('myApp.header', [])
                     $scope.user = {};
                     $scope.user.username = getUsername();
 
-                    $scope.isLoggedIn = authenticatedUserService.isAuthenticated;
+                    $scope.isLoggedIn = authenticationService.isAuthenticated;
 
                     $scope.isPage = function(page) {
                         return $location.url().startsWith(page);
@@ -24,12 +24,12 @@ angular.module('myApp.header', [])
                     };
 
                     $scope.logout = function() {
-                        authenticatedUserService.removeAuthenticatedUser();
+                        authenticationService.removeAuthentication();
                         $location.url('/');
                     };
 
                     function getUsername() {
-                        var user = authenticatedUserService.getUser();
+                        var user = authenticationService.getUser();
                         if (user) {
                             return user.username;
                         }
@@ -40,7 +40,7 @@ angular.module('myApp.header', [])
                         $scope.user.username = getUsername();
                     };
 
-                    authenticatedUserService.addAuthenticationCallback($scope.authenticationCallback);
+                    authenticationService.addAuthenticationCallback($scope.authenticationCallback);
                 }
             }
         }]);

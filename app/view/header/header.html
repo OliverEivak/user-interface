@@ -5,7 +5,8 @@
 <!-- Navigation -->
 <nav class="white" role="navigation">
     <div class="nav-wrapper container">
-        <a id="logo-container" href="#" class="brand-logo"><img src="img/video128x128.png" alt="logo" />Study Information System</a>
+        <a id="logo-container" href="#" class="brand-logo"><img src="img/video128x128.png" alt="logo" />User Interfaces</a>
+
         <ul class="right hide-on-med-and-down">
             <li ng-class="{active: isPage('/home')}"><a href="#/home">Home</a></li>
             <!-- TODO: profile info to show that user is logged in -->
@@ -27,7 +28,7 @@
     </div>
 </nav>
 
-<div id="index-banner" class="parallax-container">
+<div id="index-banner" class="parallax-container" data-ng-if="!isLoggedIn()">
     <div class="section no-pad-bot">
         <div class="container">
             <br><br>

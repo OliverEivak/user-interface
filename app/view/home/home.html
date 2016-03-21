@@ -3,99 +3,39 @@
         <div class="col s12">
         </div>
     </div>
-    <nav data-ng-if="isLoggedIn()">
-        <div class="nav-wrapper">
-            <div class="col s12">
-                <a href="#/" class="breadcrumb">Home</a>
-            </div>
-        </div>
-    </nav>
-    <div class="row" data-ng-if="!isLoggedIn()">
+
+    <!-- Landing page when not logged in -->
+    <div class="row" data-ng-if="!isAuthenticated()">
         <div class="row">
-                <div class="col s12 m12 l8">
-                    <h4>Available courses</h4>
-                    <div data-ng-repeat="course in data.courses" class="card-panel">
-                        {{course.code}} {{course.name}}
+            <div class="col s12 m12 l8">
+                <h4>Available test accounts</h4>
+                <div class="card">
+                    <div class="card-content">
+                        <span class="card-title">Student</span>
+                        <p>
+                            username: student<br>
+                            password: asd<br>
+                        </p>
                     </div>
                 </div>
-                <div class="col s12 m12 l4" login></div>
+                <div class="card">
+                    <div class="card-content">
+                        <span class="card-title">Teacher</span>
+                        <p>
+                            username: teacher<br>
+                            password: asdasd<br>
+                        </p>
+                    </div>
+                </div>
+            </div>
+            <div class="col s12 m12 l4" login></div>
         </div>
     </div>
-    <div class="row" data-ng-if="isLoggedIn()">
-        <div class="col s12 m12 l3" sidebar></div>
+
+    <!-- Logged in -->
+    <div class="row" data-ng-if="isAuthenticated()">
         <div class="col s12 m12 l9">
-            <ul class="collection">
-                <li class="collection-item avatar">
-                    <i class="material-icons circle">assignment</i>
-                    <span class="title">Week 3: User Interfaces</span>
-                    <p>No points
 
-                    </p>
-                    <!--a href="" class="secondary-content" data-ng-click="toggleLinkForm()">
-                        <i class="material-icons">playlist_add</i>
-                    </a-->
-                    <ul class="collection">
-                        <li data-ng-if="week.links.length === 0 && !linkForm.isVisible" class="collection-item">
-                            <i class="material-icons left">code</i>
-                            <a href="" class="right" data-ng-click="toggleLinkForm()">
-                                <i class="material-icons">playlist_add</i>
-                            </a>
-                            <p><a href="" data-ng-click="toggleLinkForm()">Add link</a></p>
-                        </li>
-                        <li ng-repeat="link in week.links" class="collection-item">
-                            <i class="material-icons left">code</i>
-                            <a href="" class="right" data-ng-click="removeLink(link)">
-                                <i class="material-icons">delete</i>
-                            </a>
-                            <p><a href="{{link}}" class="truncate">{{link}}</a></p>
-                        </li>
-                        <form data-ng-if="linkForm.isVisible">
-                            <li class="collection-item">
-                                <div class="row">
-                                    <div input-field class="col s6">
-                                        <input id="week-3-url" type="text" class="validate" ng-model="addLinkForm.link">
-                                        <label for="week-3-url">URL
-                                        </label>
-                                    </div>
-                                    <div input-field class="col s6">
-                                        <button class="btn waves-effect waves-light" type="submit" name="addLink" ng-click="addLink()">Add
-                                            <i class="material-icons right">send</i>
-                                        </button>
-                                        <button class="btn waves-effect waves-light" name="cancelAddLink" ng-click="cancelAddLink()">Cancel
-                                        </button>
-                                    </div>
-                                </div>
-                            </li>
-                        </form>
-                    </ul>
-                </li>
-                <li class="collection-item avatar">
-                    <i class="material-icons circle teal">done</i>
-                    <span class="title">Week 2: User Interfaces</span>
-                    <p>8 points
-
-                    </p>
-                    <a href="" class="secondary-content">
-                        <i class="material-icons">playlist_add</i>
-                    </a>
-                    <ul class="collection">
-                        <li ng-repeat="single in collapsibleElements" class="collection-item">
-                            {{single.title}}
-                            <span class="badge">{{single.points}}/{{single.total}}</span>
-                        </li>
-                    </ul>
-                </li>
-                <li class="collection-item avatar">
-                    <i class="material-icons circle teal">done</i>
-                    <span class="title">Week 1: User Interfaces</span>
-                    <p>1 point
-
-                    </p>
-                    <a href="" class="secondary-content">
-                        <i class="material-icons">playlist_add</i>
-                    </a>
-                </li>
-            </ul>
         </div>
     </div>
 </div>

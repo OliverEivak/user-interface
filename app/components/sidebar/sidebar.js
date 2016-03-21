@@ -2,8 +2,8 @@
 
 angular.module('myApp.sidebar', [])
 
-    .directive('sidebar', ['$timeout', '$location', '$routeParams', 'serverCallService',
-        function($timeout, $location, $routeParams, serverCallService) {
+    .directive('sidebar', ['$timeout', '$location', '$routeParams', 'httpService',
+        function($timeout, $location, $routeParams, httpService) {
             return {
                 scope: true,
                 templateUrl: 'components/sidebar/sidebar.html',
@@ -11,24 +11,18 @@ angular.module('myApp.sidebar', [])
 
                     $scope.data = {};
 
-                    serverCallService.makeGet('rest/courses', {}, getCoursesSuccess, getCoursesFail);
+                    httpService.makeGet('rest/gradeGroups', {}, getGradeGroupsSuccess, getGradeGroupsFail);
 
-                    function getCoursesSuccess(data) {
-                        $scope.data.courses = data;
+                    function getGradeGroupsSuccess(data) {
+                        $scope.data.gradeGroups = data;
                     }
 
-                    function getCoursesFail() {
+                    function getGradeGroupsFail() {
 
                     }
 
-                    $scope.isCoursePage = function(course) {
-                        if ($routeParams.courseCode === course.code) {
-                            return true;
-                        }
-                    };
-
-                    $scope.isNotCoursePage = function() {
-                        if (!$routeParams.courseCode) {
+                    $scope.isGradeGroupPage = function(gradeGroup) {
+                        if ($routeParams.gradeGroup === String(gradeGroup.id)) {
                             return true;
                         }
                     };

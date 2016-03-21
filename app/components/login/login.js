@@ -2,8 +2,8 @@
 
 angular.module('myApp.login', [])
 
-    .directive('login', ['$timeout', '$location', 'authenticatedUserService',
-        function($timeout, $location, authenticatedUserService) {
+    .directive('login', ['$timeout', '$location', 'authenticationService',
+        function($timeout, $location, authenticationService) {
             return {
                 scope: true,
                 templateUrl: 'components/login/login.html',
@@ -22,11 +22,16 @@ angular.module('myApp.login', [])
                             var authenticatedUser = {
                                 'user': user
                             };
-                            authenticatedUserService.setAuthenticatedUser(authenticatedUser);
+                            authenticationService.setAuthentication(authenticatedUser);
 
                             $scope.loginForm = {};
 
-                            $location.url('/');
+                            if (user.role === 'STUDENT') {
+                                $location.url('/student/gradeGroups/1');
+                            } else if (user.role === 'TEACHER') {
+                                $location.url('/teacher');
+                            }
+
                         } else {
                             $scope.loginFailed = true;
                         }

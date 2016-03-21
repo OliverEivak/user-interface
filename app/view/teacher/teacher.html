@@ -1,0 +1,87 @@
+<!-- Modal -->
+<div data-modal-grade-group data-user="selectedUser" data-grade-group="selectedGradeGroup"
+     data-is-open="isModalOpen" data-accessor="modalAccessor"></div>
+
+<div class="container">
+    <div class="row">
+        <div class="col s12">
+        </div>
+    </div>
+
+    <div class="row">
+        <div class="col s12 m6 l6">
+            <h4>Teacher's summary</h4>
+        </div>
+        <div class="col s12 m6 l6 card-panel">
+
+            <div class="row no-margin valign-wrapper">
+                <div class="col s1 valign">
+                    <i class="material-icons prefix valign">search</i>
+                </div>
+                <div class="col s10 valign">
+                    <div class="input-field no-margin">
+                        <input id="search-input" type="text" required data-ng-model="data.searchQuery">
+                        <label for="search-input"></label>
+                    </div>
+                </div>
+                <div class="col s1 valign small-margin no-padding">
+                    <a href="" data-ng-click="data.searchQuery = ''" data-ng-if="data.searchQuery">
+                        <i class="material-icons valign no-padding">close</i></a>
+                </div>
+            </div>
+
+        </div>
+    </div>
+
+    <div class="row">
+        <div class="col s12 m12 l12">
+            <table class="responsive-table">
+                <thead>
+                <tr>
+                    <th data-field="active-selection"> </th>
+                    <th data-field="student">Student</th>
+                    <th data-field="{{gradeGroup.name}}" data-ng-repeat="gradeGroup in gradeGroups" class="center-text">{{gradeGroup.name}}</th>
+                    <th class="center-text">Total</th>
+                </tr>
+                </thead>
+
+                <tbody>
+                <tr data-ng-repeat="student in students" data-ng-class="{
+                    'grey': student.studentGroupColor !== 0,
+                    'lighten-4': student.studentGroupColor === 1,
+                    'lighten-3': student.studentGroupColor === 2
+                    }">
+                    <td>
+                        <input type="checkbox" id="checkbox-for-student-{{student.id}}" data-ng-model="student.isSelected" />
+                        <label for="checkbox-for-student-{{student.id}}">
+                            <span data-ng-if="student.studentGroup">({{student.studentGroup || 0}})</span>
+                        </label>
+                    </td>
+                    <td>{{student.firstName}} {{student.lastName}}</td>
+                    <td data-ng-repeat="gradeGroup in gradeGroups" class="center-text highlight-on-hover">
+                        <a href="#grade-group-modal" modal open="isModalOpen" complete="modalAccessor.reset"
+                           data-ng-click="setModalData(gradeGroup, student)" class="link-fill">
+                            {{getStudentsGradeGroupSum(student, gradeGroup)}}
+                        </a>
+                    </td>
+                    <td class="center-text">{{student.gradeGroupTotal}}</td>
+                </tr>
+                </tbody>
+            </table>
+        </div>
+    </div>
+</div>
+
+<!-- FAB -->
+<div class="fixed-action-btn" data-ng-if="isAuthenticated()">
+    <a class="btn-floating btn-large red" data-ng-click="joinStudents()">
+        <i class="large material-icons">call_merge</i>
+    </a>
+    <ul>
+        <li>
+            <a class="btn-floating red" data-ng-click="splitStudents()">
+                <i class="material-icons">call_split</i>
+            </a>
+        </li>
+    </ul>
+</div>

@@ -58,3 +58,85 @@ label[data-error]:after {
 .nav-wrapper .col {
     padding-left: 1rem;
 }
+
+/* Fancy table headings */
+th.rotate {
+    /* Something you can count on */
+    height: 140px;
+    white-space: nowrap;
+}
+
+th.rotate > div {
+    transform:
+        /* Magic Numbers */
+            translate(25px, 51px)
+                /* 45 is really 360 - 45 */
+            rotate(315deg);
+    width: 30px;
+}
+th.rotate > div > span {
+    border-bottom: 1px solid #ccc;
+    padding: 5px 10px;
+}
+
+/* badge in collapsible */
+.collapsible-header > .badge {
+    margin-right: 10px;
+}
+
+[data-add-link] {
+    padding: 30px;
+}
+
+.pad-left {
+    padding-left: 30px;
+}
+
+.center-text {
+    text-align: center;
+}
+
+.link-fill {
+    display: block;
+    width: 100%;
+}
+
+/*table tbody tr td:hover {*/
+.highlight-on-hover:hover {
+    background-color: #f2f2f2;
+}
+
+.range-field {
+    margin-top: 0px;
+}
+
+.fixed-action-button {
+    bottom: 45px;
+    right: 24px;
+}
+
+/* Search box */
+.input-field #search-input {
+    border: 0;
+    font-size: 175%;
+    display: block;
+    width: calc(100% - 4rem);
+    margin: 5px 0 5px 0;
+}
+
+.input-field #search-input:focus {
+    border: 0;
+    box-shadow: none;
+}
+
+.no-margin {
+    margin: 0;
+}
+
+.small-margin {
+    margin-left: 5px;
+}
+
+.no-padding {
+    padding: 0;
+}

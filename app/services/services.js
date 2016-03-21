@@ -1,8 +1,8 @@
 'use strict';
 
 angular.module('myApp.services', [
-    'myApp.services.authenticatedUserService',
-    'myApp.services.serverCallService'
+    'myApp.services.authenticationService',
+    'myApp.services.httpService'
 ])
 
     .value('services', '0.1');

@@ -9,8 +9,8 @@ angular.module('myApp.register', ['ngRoute'])
         });
     }])
 
-    .controller('RegisterCtrl', ['$scope', '$timeout', '$location', 'authenticatedUserService',
-        function($scope, $timeout, $location, authenticatedUserService) {
+    .controller('RegisterCtrl', ['$scope', '$timeout', '$location', 'authenticationService',
+        function($scope, $timeout, $location, authenticationService) {
 
             $scope.registerForm = {};
 
@@ -29,16 +29,20 @@ angular.module('myApp.register', ['ngRoute'])
                     console.log('valid=' + $scope.formRegister.$valid);
 
                     var user = {
+                        id: 1,
                         username: $scope.registerForm.username,
                         firstName: $scope.registerForm.firstName,
                         lastName: $scope.registerForm.lastName,
-                        password: $scope.registerForm.password
+                        password: $scope.registerForm.password,
+                        role: 'STUDENT'
                     };
 
                     // Register
                     var users = JSON.parse(localStorage.getItem("users"));
                     if (!users) {
                         users = [];
+                    } else {
+                        user.id = getNextID(users);
                     }
                     users.push(user);
                     localStorage.setItem("users", JSON.stringify(users));
@@ -47,11 +51,21 @@ angular.module('myApp.register', ['ngRoute'])
                     var authenticatedUser = {
                         'user': user
                     };
-                    authenticatedUserService.setAuthenticatedUser(authenticatedUser);
+                    authenticationService.setAuthentication(authenticatedUser);
 
                     $location.url('/');
                 }
             };
+
+            function getNextID(objects) {
+                var maxID = 1;
+                for (var i = 0; i < objects.length; i++) {
+                    if (objects[i].id && objects[i].id > maxID) {
+                        maxID = objects[i].id;
+                    }
+                }
+                return maxID;
+            }
 
             $scope.cancel = function() {
                 $scope.registerForm = {};
