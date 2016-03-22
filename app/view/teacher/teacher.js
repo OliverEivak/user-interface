@@ -262,13 +262,11 @@ angular.module('myApp.teacher', ['ngRoute'])
 
                             // find all next students from the same group
                             for (var j = index + 1; j < $scope.students.length; j++) {
-                                if (j < $scope.students.length &&
-                                    $scope.students[j].studentGroup === student.studentGroup) {
+                                if ($scope.students[j].studentGroup === student.studentGroup) {
 
                                     // find a next student from another group and swap with them
                                     for (var k = index + 1; k < $scope.students.length; k++) {
-                                        if (k < $scope.students.length &&
-                                            $scope.students[k].studentGroup !== student.studentGroup) {
+                                        if ($scope.students[k].studentGroup !== student.studentGroup) {
 
                                             // swap
                                             var temp = $scope.students[k];
