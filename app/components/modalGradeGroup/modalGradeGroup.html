@@ -25,7 +25,7 @@
                     {{grade.name}}
                 </div>
                 <div class="col s3">
-                    {{getStudentGradeByGradeGroupGrade(selectedUser, grade).value}}
+                    {{selectedUser.gradesByGradeGroupGradeID[grade.id].value}}
                 </div>
                 <div class="col s3">
                     <p class="range-field">
@@ -34,7 +34,7 @@
                     </p>
                 </div>
                 <div class="col s3">
-                    <div data-comment data-grade="getStudentGradeByGradeGroupGrade(selectedUser, grade)"></div>
+                    <div data-comment data-grade="selectedUser.gradesByGradeGroupGradeID[grade.id]"></div>
                 </div>
             </div>
         </form>

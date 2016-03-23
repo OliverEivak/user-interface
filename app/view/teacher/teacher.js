@@ -14,6 +14,11 @@ angular.module('myApp.teacher', ['ngRoute'])
 
             $scope.isAuthenticated = authenticationService.isAuthenticated;
 
+            $scope.pagination = {
+                page: 1,
+                pageSize: 20
+            };
+
             // Get grade groups
             httpService.makeGet('rest/gradeGroups', {}, getGradeGroupsSuccess, getGradeGroupsFail);
 
@@ -34,6 +39,7 @@ angular.module('myApp.teacher', ['ngRoute'])
 
             function getStudentsSuccess(data) {
                 $scope.students = data;
+                resetPagination();
 
                 calculateStudentGroupColors();
 
@@ -75,14 +81,6 @@ angular.module('myApp.teacher', ['ngRoute'])
                 console.log('Failed to get all student grades.');
             }
 
-            function findUserByID(users, userID) {
-                for (var i = 0; i < users.length; i++) {
-                    if (users[i].id === userID) {
-                        return users[i];
-                    }
-                }
-            }
-
             function calculateGradeGroupSums() {
                 $scope.students.forEach(function(user) {
                     var sortedGrades = [];
@@ -99,24 +97,20 @@ angular.module('myApp.teacher', ['ngRoute'])
                     });
 
                     user.gradeGroupSummaries = [];
-                    var total = 0;
-                    sortedGrades.forEach(function(grades, index) {
+                    user.gradeGroupTotal = 0;
+
+                    // create gradeGroupSummaries
+                    $scope.gradeGroups.forEach(function(gradeGroup) {
                         var gradeGroupTotal = 0;
-                        grades.forEach(function(grade) {
-                            gradeGroupTotal += grade.value;
-                        });
-                        total += gradeGroupTotal;
+                        if (sortedGrades[gradeGroup.id]) {
+                            sortedGrades[gradeGroup.id].forEach(function (grade) {
+                                gradeGroupTotal += grade.value;
+                            });
 
-                        user.gradeGroupSummaries.push({
-                            gradeGroup: index,
-                            total: gradeGroupTotal
-                        });
-                    });
-                    user.gradeGroupTotal = total;
+                            user.gradeGroupTotal += gradeGroupTotal;
+                        }
 
-                    // Sort the totals by gradeGroup index
-                    user.gradeGroupSummaries.sort(function(a, b) {
-                       return a.index - b.index;
+                        user.gradeGroupSummaries[gradeGroup.id] = gradeGroupTotal || '-';
                     });
                 });
             }
@@ -154,17 +148,7 @@ angular.module('myApp.teacher', ['ngRoute'])
                         calculateGradeGroupSums();
                     }
                 }
-            });
-
-            $scope.getStudentsGradeGroupSum = function(user, gradeGroup) {
-                for (var i = 0; i < user.gradeGroupSummaries.length; i++) {
-                    if (user.gradeGroupSummaries[i].gradeGroup === gradeGroup.id) {
-                        return user.gradeGroupSummaries[i].total;
-                    }
-                }
-
-                return '-';
-            };
+            }, true);
 
             function calculateStudentGroupColors() {
                 var last;
@@ -307,5 +291,62 @@ angular.module('myApp.teacher', ['ngRoute'])
             $scope.data = {
                 searchQuery: ''
             };
+
+            // filter
+            $scope.$watch('data.searchQuery', function() {
+                var query = $scope.data.searchQuery;
+                if (!query || query.trim().length === 0) {
+                    resetPagination();
+                    return;
+                }
+                query = query.toLowerCase();
+
+                $scope.matchingStudents = [];
+
+                var matchingGroupIDs = [];
+
+                $scope.students.forEach(function(student, index) {
+                    var queryInFirstName = student.firstName.toLowerCase().indexOf(query) !== -1;
+                    var queryInLastName = student.lastName.toLowerCase().indexOf(query) !== -1;
+                    var queryInFullName = (student.firstName.toLowerCase() + ' ' + student.lastName.toLowerCase()).indexOf(query) !== -1;
+                    var hasStudentGroup = student.studentGroup > 0;
+                    var groupHasBeenMatched = hasStudentGroup && matchingGroupIDs.indexOf(student.studentGroup) !== -1;
+
+                    if (queryInFirstName || queryInLastName || queryInFullName || groupHasBeenMatched) {
+                        $scope.matchingStudents.push(student);
+
+                        if (hasStudentGroup && !groupHasBeenMatched) {
+                            matchingGroupIDs.push(student.studentGroup);
+
+                            // find previous students from the same group
+                            var i = index;
+                            while (i && $scope.students[i - 1].studentGroup &&
+                                $scope.students[i - 1].studentGroup === student.studentGroup) {
+                                $scope.matchingStudents.push($scope.students[i - 1]);
+                                i--;
+                            }
+                        }
+                    }
+                });
+
+                $scope.visibleStudents = $scope.matchingStudents.slice(0, Math.min($scope.pagination.pageSize, $scope.matchingStudents.length));
+                $scope.pagination.page = 1;
+            });
+
+            /**
+             * Will be called when the user clicks on a page number.
+             */
+            $scope.changePage = function(page) {
+                console.log('change to page ' + page);
+
+                var start = (page - 1) * $scope.pagination.pageSize;
+                var end = start + $scope.pagination.pageSize;
+                $scope.visibleStudents = $scope.matchingStudents.slice(start, end);
+            };
+
+            function resetPagination() {
+                $scope.matchingStudents = $scope.students;
+                $scope.visibleStudents = $scope.students.slice(0, Math.min($scope.pagination.pageSize, $scope.students.length));
+            }
 
         }]);

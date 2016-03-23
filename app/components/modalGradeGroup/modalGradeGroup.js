@@ -47,6 +47,9 @@ angular.module('myApp.modalGradeGroup', [])
                         if (!$scope.selectedUser)
                             return;
 
+                        // References for quick access in the view
+                        $scope.selectedUser.gradesByGradeGroupGradeID = [];
+
                         // Fill with existing values or zeroes
                         $scope.selectedGradeGroup.grades.forEach(function(grade) {
                             var studentGrade = $scope.getStudentGradeByGradeGroupGrade($scope.selectedUser, grade);
@@ -62,6 +65,9 @@ angular.module('myApp.modalGradeGroup', [])
                                 };
                                 $scope.selectedUser.grades.push(studentGrade);
                             }
+
+                            // Save a reference
+                            $scope.selectedUser.gradesByGradeGroupGradeID[grade.id] = studentGrade;
 
                             $scope.rangeValues[grade.id] = studentGrade.value;
                         });
@@ -112,7 +118,8 @@ angular.module('myApp.modalGradeGroup', [])
 
                     $scope.save = function() {
                         // Send data back
-                        $scope.user = $scope.selectedUser;
+                        // $scope.user = $scope.selectedUser;
+                        $scope.user.grades = $scope.selectedUser.grades;
 
                         //$scope.isOpen = false;
                         angular.element('#grade-group-modal').closeModal();

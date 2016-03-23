@@ -11,11 +11,21 @@ angular.module('myApp.comment', [])
                 templateUrl: 'components/comment/comment.html',
                 controller: function($scope) {
 
-                    $scope.showInput = !(!$scope.grade || !$scope.grade.comment || $scope.grade.comment.length === 0);
+                    hideIfEmpty();
 
                     $scope.show = function() {
                         $scope.showInput = true;
                     };
+
+                    function hideIfEmpty() {
+                        $scope.showInput = !(!$scope.grade || !$scope.grade.comment || $scope.grade.comment.length === 0);
+                    }
+
+                    $scope.$watch('grade', function(newValue, oldValue) {
+                        if (newValue && oldValue && (newValue.user !== oldValue.user || newValue.grade !== oldValue.grade)) {
+                            hideIfEmpty();
+                        }
+                    });
 
                 }
             }

@@ -140,3 +140,7 @@ th.rotate > div > span {
 .no-padding {
     padding: 0;
 }
+
+[pagination] {
+    display: inline-block;
+}
