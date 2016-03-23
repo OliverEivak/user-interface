@@ -1,6 +1,6 @@
-<div id="grade-group-modal" class="modal">
-    <div class="modal-content">
-        <h4>Editing {{selectedGradeGroup.name}} <span class="badge">{{currentValue}}/{{maxValue}}</span></h4>
+<div class="card">
+    <div class="card-content">
+        <span class="card-title">Editing {{selectedGradeGroup.name}} <span class="badge">{{currentValue}}/{{maxValue}}</span></span>
         <p>
             Students: {{selectedUser.firstName}} {{selectedUser.lastName}}
         </p>
@@ -39,8 +39,8 @@
             </div>
         </form>
     </div>
-    <div class="modal-footer">
-        <a href="" class="waves-effect waves-red btn-flat" data-ng-click="cancel()">Cancel</a>
-        <a href="" class="waves-effect waves-green btn-flat" data-ng-click="save()">Save</a>
+    <div class="card-action">
+        <a href="" class="btn-flat waves-effect waves-green" data-ng-click="save()">Save</a>
+        <a href="" class="btn-flat waves-effect waves-red" data-ng-click="cancel()">Cancel</a>
     </div>
 </div>

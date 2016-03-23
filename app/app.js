@@ -14,8 +14,9 @@ var app = angular.module('myApp', [
     'myApp.studentGradeGroup',
     'myApp.addLink',
     'myApp.teacher',
-    'myApp.modalGradeGroup',
-    'myApp.comment'
+    'myApp.teacherGradeGroup',
+    'myApp.comment',
+    'myApp.studentTable'
 ]);
 
 app.config(['$routeProvider', function ($routeProvider) {

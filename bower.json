@@ -1,5 +1,5 @@
 {
-  "name": "userinterface",
+  "name": "user-interface",
   "version": "0.0.0",
   "private": true,
   "dependencies": {

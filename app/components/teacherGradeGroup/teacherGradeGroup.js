@@ -1,8 +1,8 @@
 'use strict';
 
-angular.module('myApp.modalGradeGroup', [])
+angular.module('myApp.teacherGradeGroup', [])
 
-    .directive('modalGradeGroup', [
+    .directive('teacherGradeGroup', [
         function() {
             return {
                 scope: {
@@ -11,7 +11,7 @@ angular.module('myApp.modalGradeGroup', [])
                     isOpen: '=',
                     accessor: '='
                 },
-                templateUrl: 'components/modalGradeGroup/modalGradeGroup.html',
+                templateUrl: 'components/teacherGradeGroup/teacherGradeGroup.html',
                 controller: function($scope) {
 
                     $scope.rangeValues = [];
@@ -117,20 +117,13 @@ angular.module('myApp.modalGradeGroup', [])
                     });
 
                     $scope.save = function() {
-                        // Send data back
-                        // $scope.user = $scope.selectedUser;
                         $scope.user.grades = $scope.selectedUser.grades;
-
-                        //$scope.isOpen = false;
-                        angular.element('#grade-group-modal').closeModal();
+                        $scope.accessor.close();
                     };
 
                     $scope.cancel = function() {
-                        //Reset
                         $scope.reset();
-
-                        //$scope.isOpen = false;
-                        angular.element('#grade-group-modal').closeModal();
+                        $scope.accessor.close();
                     };
 
                 }

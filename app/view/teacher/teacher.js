@@ -19,6 +19,18 @@ angular.module('myApp.teacher', ['ngRoute'])
                 pageSize: 20
             };
 
+            $scope.data = {
+                searchQuery: ''
+            };
+
+            $scope.gradeGroupAccessor = {
+                close: closeGradeGroup
+            };
+
+            $scope.studentTableAccessor = {
+                openGradeGroup: openGradeGroup
+            };
+
             // Get grade groups
             httpService.makeGet('rest/gradeGroups', {}, getGradeGroupsSuccess, getGradeGroupsFail);
 
@@ -125,13 +137,6 @@ angular.module('myApp.teacher', ['ngRoute'])
                 }
             }
 
-            $scope.modalAccessor = {};
-
-            $scope.setModalData = function(gradeGroup, student) {
-                $scope.selectedUser = student;
-                $scope.selectedGradeGroup = gradeGroup;
-            };
-
             $scope.$watch('selectedUser', function(newValue, oldValue) {
                 if (newValue && oldValue) {
                     var changed = false;
@@ -190,6 +195,8 @@ angular.module('myApp.teacher', ['ngRoute'])
                 sortStudentsByGroups();
                 calculateStudentGroupColors();
                 clearStudentSelection();
+
+                showPage($scope.pagination.page);
             };
 
             $scope.splitStudents = function() {
@@ -288,10 +295,6 @@ angular.module('myApp.teacher', ['ngRoute'])
                 });
             }
 
-            $scope.data = {
-                searchQuery: ''
-            };
-
             // filter
             $scope.$watch('data.searchQuery', function() {
                 var query = $scope.data.searchQuery;
@@ -330,6 +333,7 @@ angular.module('myApp.teacher', ['ngRoute'])
                 });
 
                 $scope.visibleStudents = $scope.matchingStudents.slice(0, Math.min($scope.pagination.pageSize, $scope.matchingStudents.length));
+                $scope.visibleStudents2 = [];
                 $scope.pagination.page = 1;
             });
 
@@ -337,16 +341,80 @@ angular.module('myApp.teacher', ['ngRoute'])
              * Will be called when the user clicks on a page number.
              */
             $scope.changePage = function(page) {
-                console.log('change to page ' + page);
-
-                var start = (page - 1) * $scope.pagination.pageSize;
-                var end = start + $scope.pagination.pageSize;
-                $scope.visibleStudents = $scope.matchingStudents.slice(start, end);
+                showPage(page);
+                scroll("#visible-students-table", 700, 0);
             };
 
             function resetPagination() {
                 $scope.matchingStudents = $scope.students;
                 $scope.visibleStudents = $scope.students.slice(0, Math.min($scope.pagination.pageSize, $scope.students.length));
+                $scope.visibleStudents2 = [];
+            }
+
+            function showPage(page) {
+                var start = (page - 1) * $scope.pagination.pageSize;
+                var end = start + $scope.pagination.pageSize;
+                $scope.visibleStudents = $scope.matchingStudents.slice(start, end);
+                $scope.visibleStudents2 = [];
+            }
+
+            function openGradeGroup(gradeGroup, student) {
+                $scope.selectedUser = student;
+                $scope.selectedGradeGroup = gradeGroup;
+
+                $scope.gradeGroupVisible = true;
+
+                scroll("#grade-group-card", 1000, -15);
+
+                $scope.lastClickedStudent = student;
+
+                splitStudentList(student);
+            }
+
+            function closeGradeGroup() {
+                $scope.gradeGroupVisible = false;
+
+                // scroll up to the first student of the edited group
+                var indexOfClickedStudent = $scope.visibleStudents.indexOf($scope.lastClickedStudent);
+                if (indexOfClickedStudent > 0) {
+                    for (var i = indexOfClickedStudent - 1; i >= 0; i--) {
+                        if (!$scope.visibleStudents[i].studentGroup ||
+                            $scope.visibleStudents[i].studentGroup !== $scope.lastClickedStudent.studentGroup) {
+                            scroll("#tr-student-" + ($scope.visibleStudents[i + 1].id), 1000, 0);
+                            break;
+                        }
+                    }
+                } else {
+                    scroll("#tr-student-" + ($scope.visibleStudents[indexOfClickedStudent].id), 1000, 0);
+                }
+
+                joinStudentList();
+            }
+
+            /**
+             * Split the student table in two right after the students of the clicked group.
+             */
+            function splitStudentList(student) {
+                for (var i = $scope.visibleStudents.indexOf(student) + 1; i < $scope.visibleStudents.length; i++) {
+                    if (!$scope.visibleStudents[i].studentGroup || $scope.visibleStudents[i].studentGroup !== student.studentGroup) {
+                        $scope.visibleStudents2 = $scope.visibleStudents.slice(i, $scope.visibleStudents.length);
+                        $scope.visibleStudents = $scope.visibleStudents.slice(0, i);
+                        break;
+                    }
+                }
+            }
+
+            function joinStudentList() {
+                Array.prototype.push.apply($scope.visibleStudents, $scope.visibleStudents2);
+                $scope.visibleStudents2 = [];
+            }
+
+            function scroll(element, period, offset) {
+                $timeout(function() {
+                    $('html, body').animate({
+                        scrollTop: $(element).offset().top + offset
+                    }, period);
+                });
             }
 
         }]);

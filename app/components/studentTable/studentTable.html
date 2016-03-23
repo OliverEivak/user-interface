@@ -1,0 +1,31 @@
+<table class="responsive-table">
+    <thead>
+    <tr>
+        <th data-field="active-selection"> </th>
+        <th data-field="student">Student</th>
+        <th data-field="{{gradeGroup.name}}" data-ng-repeat="gradeGroup in gradeGroups" class="center-text">{{gradeGroup.name}}</th>
+        <th class="center-text">Total</th>
+    </tr>
+    </thead>
+
+    <tbody>
+    <tr data-ng-repeat="student in students" data-ng-class="{
+                    'grey': student.studentGroupColor !== 0,
+                    'lighten-4': student.studentGroupColor === 1,
+                    'lighten-3': student.studentGroupColor === 2
+                    }" id="tr-student-{{student.id}}">
+        <td>
+            <input type="checkbox" id="checkbox-for-student-{{student.id}}" data-ng-model="student.isSelected" />
+            <label for="checkbox-for-student-{{student.id}}">
+                <span data-ng-if="student.studentGroup">({{student.studentGroup || 0}})</span>
+            </label>
+        </td>
+        <td>{{student.firstName}} {{student.lastName}} ({{student.id}})</td>
+        <td data-ng-repeat="gradeGroup in gradeGroups" class="center-text highlight-on-hover"
+            data-ng-click="accessor.openGradeGroup(gradeGroup, student)">
+            {{student.gradeGroupSummaries[gradeGroup.id]}}
+        </td>
+        <td class="center-text">{{student.gradeGroupTotal}}</td>
+    </tr>
+    </tbody>
+</table>

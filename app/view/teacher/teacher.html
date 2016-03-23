@@ -1,7 +1,3 @@
-<!-- Modal -->
-<div data-modal-grade-group data-user="selectedUser" data-grade-group="selectedGradeGroup"
-     data-is-open="isModalOpen" data-accessor="modalAccessor"></div>
-
 <div class="container">
     <div class="row">
         <div class="col s12">
@@ -34,53 +30,32 @@
         </div>
     </div>
 
+    <div class="row" id="visible-students-table">
+        <div class="col s12 m12 l12" data-student-table data-grade-groups="gradeGroups" data-students="visibleStudents"
+             data-accessor="studentTableAccessor">
+        </div>
+    </div>
+
     <div class="row">
         <div class="col s12 m12 l12">
-            <table class="responsive-table">
-                <thead>
-                <tr>
-                    <th data-field="active-selection"> </th>
-                    <th data-field="student">Student</th>
-                    <th data-field="{{gradeGroup.name}}" data-ng-repeat="gradeGroup in gradeGroups" class="center-text">{{gradeGroup.name}}</th>
-                    <th class="center-text">Total</th>
-                </tr>
-                </thead>
+            <div data-teacher-grade-group data-user="selectedUser" data-grade-group="selectedGradeGroup"
+                 data-accessor="gradeGroupAccessor" data-ng-show="gradeGroupVisible" id="grade-group-card"></div>
+        </div>
+    </div>
 
-                <tbody>
-                <tr data-ng-repeat="student in visibleStudents" data-ng-class="{
-                    'grey': student.studentGroupColor !== 0,
-                    'lighten-4': student.studentGroupColor === 1,
-                    'lighten-3': student.studentGroupColor === 2
-                    }">
-                    <td>
-                        <input type="checkbox" id="checkbox-for-student-{{student.id}}" data-ng-model="student.isSelected" />
-                        <label for="checkbox-for-student-{{student.id}}">
-                            <span data-ng-if="student.studentGroup">({{student.studentGroup || 0}})</span>
-                        </label>
-                    </td>
-                    <td>{{student.firstName}} {{student.lastName}} ({{student.id}})</td>
-                    <td data-ng-repeat="gradeGroup in gradeGroups" class="center-text highlight-on-hover">
-                        <a href="#grade-group-modal" modal open="isModalOpen" complete="modalAccessor.reset"
-                           data-ng-click="setModalData(gradeGroup, student)" class="link-fill">
-                            {{student.gradeGroupSummaries[gradeGroup.id]}}
-                        </a>
-                    </td>
-                    <td class="center-text">{{student.gradeGroupTotal}}</td>
-                </tr>
-                </tbody>
-            </table>
+    <div class="row" data-ng-if="visibleStudents2 && visibleStudents2.length">
+        <div class="col s12 m12 l12" data-student-table data-grade-groups="gradeGroups" data-students="visibleStudents2"
+             data-accessor="studentTableAccessor">
         </div>
     </div>
 
     <div class="row">
         <div class="col s12 m12 l12 center-align">
             <pagination page="pagination.page" page-size="pagination.pageSize" total="matchingStudents.length" show-prev-next="true"
-                        dots="...." hide-if-empty="false" adjacent="2" scroll-top="true" pagination-action="changePage(page)" />
+                        dots="...." hide-if-empty="false" adjacent="2" scroll-top="false" pagination-action="changePage(page)" />
         </div>
     </div>
 </div>
-
-
 
 <!-- FAB -->
 <div class="fixed-action-btn" data-ng-if="isAuthenticated()">
