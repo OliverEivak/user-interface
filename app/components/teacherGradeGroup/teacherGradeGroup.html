@@ -2,7 +2,10 @@
     <div class="card-content">
         <span class="card-title">Editing {{selectedGradeGroup.name}} <span class="badge">{{currentValue}}/{{maxValue}}</span></span>
         <p>
-            Students: {{selectedUser.firstName}} {{selectedUser.lastName}}
+            Students:
+            <span data-ng-repeat="selectedUser in selectedUsers">
+                {{selectedUser.firstName + ' ' + selectedUser.lastName}}{{$last ? '' : ', '}}
+            </span>
         </p>
 
         <form action="#">
@@ -11,7 +14,9 @@
                     Grade
                 </div>
                 <div class="col s3">
-                    {{selectedUser.firstName.charAt(0)}}{{selectedUser.lastName.charAt(0)}}
+                    <span data-ng-repeat="selectedUser in selectedUsers">
+                        {{selectedUser.firstName.charAt(0) + selectedUser.lastName.charAt(0)}}{{$last ? '' : ', '}}
+                    </span>
                 </div>
                 <div class="col s3">
                     Slide to grade
@@ -22,10 +27,13 @@
             </div>
             <div class="row" data-ng-repeat="grade in selectedGradeGroup.grades">
                 <div class="col s3">
-                    {{grade.name}}
+                    <a ng-href="{{links[grade.id]}}" data-ng-if="links[grade.id]">{{grade.name}}</a>
+                    <span data-ng-if="!links[grade.id]">{{grade.name}}</span>
                 </div>
                 <div class="col s3">
-                    {{selectedUser.gradesByGradeGroupGradeID[grade.id].value}}
+                    <span data-ng-repeat="selectedUser in selectedUsers">
+                        {{selectedUser.gradesByGradeGroupGradeID[grade.id].value}}{{$last ? '' : ', '}}
+                    </span>
                 </div>
                 <div class="col s3">
                     <p class="range-field">
@@ -34,7 +42,7 @@
                     </p>
                 </div>
                 <div class="col s3">
-                    <div data-comment data-grade="selectedUser.gradesByGradeGroupGradeID[grade.id]"></div>
+                    <div data-comment data-text="comments[grade.id]"></div>
                 </div>
             </div>
         </form>

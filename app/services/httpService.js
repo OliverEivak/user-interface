@@ -120,7 +120,8 @@ angular.module('myApp.services.httpService', []).
                     id: 1,
                     name: 'Weekly grades',
                     description: 'Solve a technical problem that involves building user interfaces every week. ',
-                    grades: [] // will be generated
+                    grades: [], // will be generated
+                    isSolo: true
                 },{
                     id: 2,
                     name: 'Prototype 1',
@@ -191,7 +192,8 @@ angular.module('myApp.services.httpService', []).
                         name: 'Late',
                         minValue: -15,
                         maxValue: 0
-                    }]
+                    }],
+                    isSolo: false
                 },{
                     id: 3,
                     name: 'Prototype 2',
@@ -252,7 +254,8 @@ angular.module('myApp.services.httpService', []).
                         name: 'Late',
                         minValue: -15,
                         maxValue: 0
-                    }]
+                    }],
+                    isSolo: false
                 },{
                     id: 4,
                     name: 'Final test',
@@ -277,7 +280,8 @@ angular.module('myApp.services.httpService', []).
                         name: 'Question 4',
                         minValue: 0,
                         maxValue: 10
-                    }]
+                    }],
+                    isSolo: true
                 }];
 
                 // Generate week grades

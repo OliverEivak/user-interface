@@ -9,8 +9,8 @@ angular.module('myApp.teacher', ['ngRoute'])
         });
     }])
 
-    .controller('TeacherCtrl', ['$scope', '$location', '$timeout', 'authenticationService', 'httpService',
-        function($scope, $location, $timeout, authenticationService, httpService) {
+    .controller('TeacherCtrl', ['$scope', '$rootScope', '$location', '$timeout', 'authenticationService', 'httpService',
+        function($scope, $rootScope, $location, $timeout, authenticationService, httpService) {
 
             $scope.isAuthenticated = authenticationService.isAuthenticated;
 
@@ -28,7 +28,8 @@ angular.module('myApp.teacher', ['ngRoute'])
             };
 
             $scope.studentTableAccessor = {
-                openGradeGroup: openGradeGroup
+                openGradeGroup: openGradeGroup,
+                studentSelectionChanged: studentSelectionChanged
             };
 
             // Get grade groups
@@ -137,21 +138,9 @@ angular.module('myApp.teacher', ['ngRoute'])
                 }
             }
 
-            $scope.$watch('selectedUser', function(newValue, oldValue) {
+            $scope.$watch('selectedUsers', function(newValue, oldValue) {
                 if (newValue && oldValue) {
-                    var changed = false;
-
-                    $scope.students.forEach(function(student, index) {
-                        if (student.id === newValue.id) {
-                            console.log('updated user in teacher view');
-                            $scope.students[index] = newValue;
-                            changed = true;
-                        }
-                    });
-
-                    if (changed) {
-                        calculateGradeGroupSums();
-                    }
+                    calculateGradeGroupSums();
                 }
             }, true);
 
@@ -221,6 +210,12 @@ angular.module('myApp.teacher', ['ngRoute'])
                 });
 
                 return selectedStudents;
+            }
+
+            function selectStudents(students) {
+                students.forEach(function(student) {
+                    student.isSelected = true;
+                });
             }
 
             function getNextGroupID() {
@@ -359,42 +354,54 @@ angular.module('myApp.teacher', ['ngRoute'])
             }
 
             function openGradeGroup(gradeGroup, student) {
-                $scope.selectedUser = student;
+                joinStudentTable(); // Might have been split previously
+
                 $scope.selectedGradeGroup = gradeGroup;
 
+                if (gradeGroup.isSolo) {
+                    $scope.selectedUsers = [student];
+                } else {
+                    $scope.selectedUsers = student.studentGroup ? getAllByStudentGroup(student.studentGroup) : [student];
+                }
+                clearStudentSelection();
+                selectStudents($scope.selectedUsers);
+
                 $scope.gradeGroupVisible = true;
-
-                scroll("#grade-group-card", 1000, -15);
-
                 $scope.lastClickedStudent = student;
+                scrollToFirstStudentOfSameGroup(student);
+                splitStudentTable(student);
 
-                splitStudentList(student);
+                $timeout(function() {
+                    $rootScope.$broadcast('gradeGroupOpen');
+                }, 0);
             }
 
             function closeGradeGroup() {
                 $scope.gradeGroupVisible = false;
+                clearStudentSelection();
+                scrollToFirstStudentOfSameGroup($scope.lastClickedStudent);
+                joinStudentTable();
+            }
 
-                // scroll up to the first student of the edited group
-                var indexOfClickedStudent = $scope.visibleStudents.indexOf($scope.lastClickedStudent);
-                if (indexOfClickedStudent > 0) {
-                    for (var i = indexOfClickedStudent - 1; i >= 0; i--) {
+            function scrollToFirstStudentOfSameGroup(student) {
+                var indexOfStudent = $scope.visibleStudents.indexOf(student);
+                if (indexOfStudent > 0) {
+                    for (var i = indexOfStudent - 1; i >= 0; i--) {
                         if (!$scope.visibleStudents[i].studentGroup ||
-                            $scope.visibleStudents[i].studentGroup !== $scope.lastClickedStudent.studentGroup) {
+                            $scope.visibleStudents[i].studentGroup !== student.studentGroup) {
                             scroll("#tr-student-" + ($scope.visibleStudents[i + 1].id), 1000, 0);
                             break;
                         }
                     }
                 } else {
-                    scroll("#tr-student-" + ($scope.visibleStudents[indexOfClickedStudent].id), 1000, 0);
+                    scroll("#tr-student-" + ($scope.visibleStudents[indexOfStudent].id), 1000, 0);
                 }
-
-                joinStudentList();
             }
 
             /**
-             * Split the student table in two right after the students of the clicked group.
+             * Split the student table in two right after the student
              */
-            function splitStudentList(student) {
+            function splitStudentTable(student) {
                 for (var i = $scope.visibleStudents.indexOf(student) + 1; i < $scope.visibleStudents.length; i++) {
                     if (!$scope.visibleStudents[i].studentGroup || $scope.visibleStudents[i].studentGroup !== student.studentGroup) {
                         $scope.visibleStudents2 = $scope.visibleStudents.slice(i, $scope.visibleStudents.length);
@@ -404,7 +411,7 @@ angular.module('myApp.teacher', ['ngRoute'])
                 }
             }
 
-            function joinStudentList() {
+            function joinStudentTable() {
                 Array.prototype.push.apply($scope.visibleStudents, $scope.visibleStudents2);
                 $scope.visibleStudents2 = [];
             }
@@ -415,6 +422,42 @@ angular.module('myApp.teacher', ['ngRoute'])
                         scrollTop: $(element).offset().top + offset
                     }, period);
                 });
+            }
+
+            function getAllByStudentGroup(studentGroup) {
+                var students = [];
+                $scope.students.forEach(function(student) {
+                    if (student.studentGroup === studentGroup) {
+                        students.push(student);
+                    }
+                });
+                return students;
+            }
+
+            /**
+             * User clicked on a checkbox next to a student.
+             * This adds/removes the user from the grade group edit view.
+             */
+            function studentSelectionChanged(student) {
+                if (!$scope.selectedUsers || !$scope.gradeGroupVisible) {
+                    return;
+                }
+
+                var found = false;
+
+                for (var i = 0; i < $scope.selectedUsers.length; i++) {
+                    if ($scope.selectedUsers[i].id === student.id) {
+                        if (!student.isSelected) {
+                            $scope.selectedUsers.splice(i, 1);
+                        }
+                        found = true;
+                        break;
+                    }
+                }
+
+                if (!found && student.isSelected) {
+                    $scope.selectedUsers.push(student);
+                }
             }
 
         }]);

@@ -2,29 +2,51 @@
 
 angular.module('myApp.comment', [])
 
-    .directive('comment', [
-        function() {
+    .directive('comment', ['$rootScope', '$timeout', '$interval',
+        function($rootScope, $timeout, $interval) {
             return {
                 scope: {
-                    grade: '='
+                    text: '='
                 },
                 templateUrl: 'components/comment/comment.html',
                 controller: function($scope) {
 
-                    hideIfEmpty();
+                    $scope.data = {
+                        text: $scope.text
+                    };
+
+                    var doNotClose = false;
+
+                    toggleShowHide();
 
                     $scope.show = function() {
                         $scope.showInput = true;
+                        doNotClose = true;
                     };
 
-                    function hideIfEmpty() {
-                        $scope.showInput = !(!$scope.grade || !$scope.grade.comment || $scope.grade.comment.length === 0);
+                    function toggleShowHide() {
+                        $scope.showInput = !(!$scope.data.text || $scope.data.text.length === 0);
                     }
 
-                    $scope.$watch('grade', function(newValue, oldValue) {
-                        if (newValue && oldValue && (newValue.user !== oldValue.user || newValue.grade !== oldValue.grade)) {
-                            hideIfEmpty();
+                    $scope.$watch('text', function() {
+                        $scope.data.text = $scope.text;
+                        doNotClose = false;
+                    });
+
+                    $scope.$watch('data.text', function(newValue, oldValue) {
+                        if (newValue !== oldValue) {
+                            $scope.text = $scope.data.text;
                         }
+                    });
+
+                    $interval(function() {
+                        if (!doNotClose)
+                            toggleShowHide();
+                    }, 3000);
+
+                    $rootScope.$on('gradeGroupOpen', function() {
+                        toggleShowHide();
+                        doNotClose = false;
                     });
 
                 }

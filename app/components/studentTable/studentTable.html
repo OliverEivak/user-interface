@@ -15,7 +15,8 @@
                     'lighten-3': student.studentGroupColor === 2
                     }" id="tr-student-{{student.id}}">
         <td>
-            <input type="checkbox" id="checkbox-for-student-{{student.id}}" data-ng-model="student.isSelected" />
+            <input type="checkbox" id="checkbox-for-student-{{student.id}}" data-ng-model="student.isSelected"
+                   data-ng-click="accessor.studentSelectionChanged(student)" />
             <label for="checkbox-for-student-{{student.id}}">
                 <span data-ng-if="student.studentGroup">({{student.studentGroup || 0}})</span>
             </label>
