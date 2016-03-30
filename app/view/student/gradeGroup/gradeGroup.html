@@ -11,7 +11,10 @@
         <div class="col s12 m12 l9">
             <div class="card">
                 <div class="card-content">
-                    <span class="card-title">{{gradeGroup.name}}</span>
+                    <span class="card-title">
+                        {{gradeGroup.name}}
+                        <span class="badge">{{gradeGroup.total}}/{{gradeGroup.maxValue}}</span>
+                    </span>
                     <p>{{gradeGroup.description}}</p>
                     <ul class="collapsible" data-collapsible="accordion">
                         <li data-ng-repeat="grade in gradeGroup.grades">

@@ -47,10 +47,16 @@ angular.module('myApp.studentGradeGroup', ['ngRoute'])
 
             function getStudentGradesFail() {
                 console.log('Failed to get grades.');
+
+                // just create empty grades
+                addStudentGradesToGradeGroup();
             }
 
             // Combine both
             function addStudentGradesToGradeGroup() {
+                $scope.gradeGroup.total = 0;
+                $scope.gradeGroup.maxValue = 0;
+
                 $scope.gradeGroup.grades.forEach(function(grade) {
                     var studentGrade = findStudentGradeByGradeGroupGrade(grade);
                     if (!studentGrade) {
@@ -59,6 +65,9 @@ angular.module('myApp.studentGradeGroup', ['ngRoute'])
                         };
                     }
                     grade.studentGrade = studentGrade;
+
+                    $scope.gradeGroup.total += studentGrade.value;
+                    $scope.gradeGroup.maxValue += grade.maxValue;
                 });
             }
 
