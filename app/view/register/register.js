@@ -80,8 +80,9 @@ angular.module('myApp.register', ['ngRoute'])
                     return false;
                 }
 
-                if ($scope.registerForm.username.length > 32 || $scope.registerForm.firstName.length > 64 ||
-                    $scope.registerForm.lastName.length > 64) {
+                if (($scope.registerForm.username && $scope.registerForm.username.length > 32) ||
+                    ($scope.registerForm.firstName && $scope.registerForm.firstName.length > 64) ||
+                    ($scope.registerForm.lastName && $scope.registerForm.lastName.length > 64)) {
                     // TODO: use data-error here too?
                     return false;
                 }
