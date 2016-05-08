@@ -6,7 +6,8 @@ angular.module('myApp.addLink', [])
         function($timeout, httpService, authenticationService) {
             return {
                 scope: {
-                    grade: '='
+                    grade: '=',
+                    hasLink: '='
                 },
                 templateUrl: 'components/addLink/addLink.html',
                 controller: function($scope) {
@@ -29,9 +30,10 @@ angular.module('myApp.addLink', [])
 
                     function getLinkSuccess(data) {
                         if (data && data.url) {
-                            console.log('got link' + data.url);
+                            console.log('got link ' + data.url);
                             $scope.addLinkForm.isVisible = false;
                             $scope.data.url = data.url;
+                            $scope.hasLink = true;
                         } else {
                             getLinkFail();
                         }
@@ -65,6 +67,7 @@ angular.module('myApp.addLink', [])
                             $scope.data.url = $scope.addLinkForm.link;
                             $scope.addLinkForm.link = null;
                             $scope.toggleAddLinkForm();
+                            $scope.hasLink = true;
                         }
                     }
 
@@ -85,6 +88,7 @@ angular.module('myApp.addLink', [])
                     function removeLinkSuccess() {
                         $scope.data.url = null;
                         $scope.toggleAddLinkForm();
+                        $scope.hasLink = false;
                     }
 
                     function removeLinkFail() {

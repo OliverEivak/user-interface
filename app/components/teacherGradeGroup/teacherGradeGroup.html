@@ -36,10 +36,18 @@
                     </span>
                 </div>
                 <div class="col s3">
-                    <p class="range-field">
-                        <input type="range" id="grade-range-{{grade.id}}" ng-model="rangeValues[grade.id]"
+                    <p class="range-field" data-ng-if="grade.minValue != 0 || grade.maxValue != 1">
+                        <input type="range" id="grade-range-{{grade.id}}" data-ng-model="rangeValues[grade.id]"
                                min="{{grade.minValue}}" max="{{grade.maxValue}}" />
                     </p>
+                    <div class="switch" data-ng-if="grade.minValue === 0 && grade.maxValue === 1">
+                        <label>
+                            0
+                            <input type="checkbox" data-ng-model="rangeValues[grade.id]" data-ng-true-value="1" data-ng-false-value="0">
+                            <span class="lever"></span>
+                            1
+                        </label>
+                    </div>
                 </div>
                 <div class="col s3">
                     <div data-comment data-text="comments[grade.id]"></div>

@@ -18,13 +18,17 @@
                     <p>{{gradeGroup.description}}</p>
                     <ul class="collapsible" data-collapsible="accordion">
                         <li data-ng-repeat="grade in gradeGroup.grades">
-                            <div class="collapsible-header">
-                                <i class="material-icons">whatshot</i>{{grade.name}}
+                            <div class="collapsible-header" data-ng-class="{'regular-cursor': (!grade.isLinkAllowed && !grade.studentGrade.comment)}">
+                                <i class="material-icons" data-ng-if="grade.isLinkAllowed && gradeHasLink">done</i>
+                                <i class="material-icons" data-ng-if="grade.isLinkAllowed && !gradeHasLink">whatshot</i>
+                                <span class="no-material-icon" data-ng-if="!grade.isLinkAllowed">{{grade.name}}</span>
+                                <span data-ng-if="grade.isLinkAllowed">{{grade.name}}</span>
+
                                 <span class="badge">{{grade.studentGrade.value}}/{{grade.maxValue}}</span>
                             </div>
-                            <div class="collapsible-body">
+                            <div class="collapsible-body" data-ng-show="grade.isLinkAllowed || grade.studentGrade.comment">
                                 <p data-ng-if="grade.studentGrade.comment">Teacher's comment: {{grade.studentGrade.comment}}</p>
-                                <div data-add-link data-grade="grade"></div>
+                                <div data-add-link data-grade="grade" data-has-link="gradeHasLink" data-ng-show="grade.isLinkAllowed"></div>
                             </div>
                         </li>
                     </ul>

@@ -131,7 +131,8 @@ angular.module('myApp.services.httpService', []).
                         id: 17,
                         name: 'Submitted',
                         minValue: 0,
-                        maxValue: 15
+                        maxValue: 15,
+                        isLinkAllowed: true
                     },{
                         id: 18,
                         name: 'Impression',
@@ -203,7 +204,8 @@ angular.module('myApp.services.httpService', []).
                         id: 30,
                         name: 'Bonus from first',
                         minValue: 0,
-                        maxValue: 16
+                        maxValue: 16,
+                        isLinkAllowed: true
                     },{
                         id: 31,
                         name: 'Login',
@@ -290,7 +292,8 @@ angular.module('myApp.services.httpService', []).
                         id: i,
                         name: 'Week ' + i,
                         minValue: 0,
-                        maxValue: 1
+                        maxValue: 1,
+                        isLinkAllowed: true
                     };
                     gradeGroups[0].grades.push(grade);
                 }

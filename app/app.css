@@ -21,10 +21,19 @@ label[data-error]:after {
 .material-icons.md-light { color: rgba(255, 255, 255, 1); }
 .material-icons.md-light.md-inactive { color: rgba(255, 255, 255, 0.3); }
 
+.no-material-icon {
+    margin-left: 45px;
+}
+
+.regular-cursor {
+    cursor: default;
+}
+
 #logo-container img {
     width: 64px;
     height: 64px;
     margin-right: 10px;
+    transform: translateY(-2px);
 }
 
 /* parallax */
