@@ -2,8 +2,8 @@
 
 angular.module('myApp.teacherGradeGroup', [])
 
-    .directive('teacherGradeGroup', ['studentService',
-        function(studentService) {
+    .directive('teacherGradeGroup', ['linkService', 'studentGradeService',
+        function(linkService, studentGradeService) {
             return {
                 scope: {
                     users: '=',
@@ -61,9 +61,13 @@ angular.module('myApp.teacherGradeGroup', [])
                                 if (!studentGrade) {
                                     console.log('creating grade');
                                     studentGrade = {
-                                        user: selectedUser.id,
+                                        user: {
+                                            id: selectedUser.id
+                                        },
                                         value: 0,
-                                        grade: grade.id,
+                                        grade: {
+                                            id: grade.id
+                                        },
                                         comment: ''
                                     };
                                     selectedUser.grades.push(studentGrade);
@@ -76,20 +80,19 @@ angular.module('myApp.teacherGradeGroup', [])
                                 $scope.comments[grade.id] = studentGrade.comment;
 
                                 if (!$scope.links[grade.id]) {
-                                    studentService.getLinkByGrade(grade, selectedUser, setLink);
+                                    linkService.getLinkByGradeAndUser(grade, selectedUser, setLink);
                                 }
                             });
                         });
 
-                        // Keep the sliders from updating the grade values right away
-                        $scope.rangeValuesJustPrefilled = true;
                         // Keep the text areas from updating the grade comments right away
                         $scope.commentsJustPrefilled = true;
                     }
 
-                    function setLink(link) {
+                    function setLink(response) {
+                        var link = response.data;
                         if (link) {
-                            $scope.links[link.grade] = link.url;
+                            $scope.links[link.grade.id] = link.url;
                         }
                     }
 
@@ -102,46 +105,35 @@ angular.module('myApp.teacherGradeGroup', [])
 
                     function getStudentGradeByGradeGroupGrade(student, gradeGroupGrade) {
                         for (var i = 0; i < student.grades.length; i++) {
-                            if (student.grades[i].grade === gradeGroupGrade.id) {
+                            if (student.grades[i].grade.id === gradeGroupGrade.id) {
                                 return student.grades[i];
                             }
                         }
                     }
 
-                    $scope.$watchCollection('rangeValues', function(newValue, oldValue) {
-                        if ($scope.rangeValuesJustPrefilled) {
-                            $scope.rangeValuesJustPrefilled = false;
-                            calculateCurrentPoints();
-                            return;
-                        }
-
+                    $scope.rangeValueChanged = function(grade) {
                         if (!$scope.selectedUsers)
                             return;
 
                         $scope.selectedUsers.forEach(function(selectedUser) {
-                            $scope.rangeValues.forEach(function(value, index) {
-                                // Only update changed value
-                                if (newValue[index] !== oldValue[index]) {
-                                    // Find the grade
-                                    var foundGrade;
-                                    selectedUser.grades.forEach(function(studentGrade) {
-                                        if (studentGrade.grade === index) {
-                                            foundGrade = studentGrade;
-                                        }
-                                    });
-
-                                    // Update existing grade
-                                    if (foundGrade) {
-                                        foundGrade.value = parseInt(value);
-                                    } else {
-                                        console.error('Did not find grade to update value.');
-                                    }
+                            // Find the grade
+                            var foundGrade;
+                            selectedUser.grades.forEach(function(studentGrade) {
+                                if (studentGrade.grade.id === grade.id) {
+                                    foundGrade = studentGrade;
                                 }
                             });
+
+                            // Update existing grade
+                            if (foundGrade) {
+                                foundGrade.value = parseInt($scope.rangeValues[grade.id]);
+                            } else {
+                                console.error('Did not find grade to update value.');
+                            }
                         });
 
                         calculateCurrentPoints();
-                    });
+                    };
 
                     $scope.$watchCollection('comments', function(newValue, oldValue) {
                         if ($scope.commentsJustPrefilled) {
@@ -159,7 +151,7 @@ angular.module('myApp.teacherGradeGroup', [])
                                     // Find the grade
                                     var foundGrade;
                                     selectedUser.grades.forEach(function(studentGrade) {
-                                        if (studentGrade.grade === index) {
+                                        if (studentGrade.grade.id === index) {
                                             foundGrade = studentGrade;
                                         }
                                     });
@@ -189,17 +181,31 @@ angular.module('myApp.teacherGradeGroup', [])
                         if (!$scope.selectedUsers || $scope.selectedUsers.length === 0)
                             return;
 
-                        $scope.users.forEach(function(user, index) {
-                            user.grades = $scope.selectedUsers[index].grades;
+                        var grades = [];
+                        $scope.selectedUsers.forEach(function(selectedUser) {
+                            var studentGrades = angular.copy(selectedUser.grades);
+                            Array.prototype.push.apply(grades, studentGrades);
                         });
 
-                        $scope.accessor.close();
+                        studentGradeService.save(grades, studentGradeSaveSuccess, studentGradeSaveFail);
                     };
 
                     $scope.cancel = function() {
                         $scope.reset();
                         $scope.accessor.close();
                     };
+
+                    function studentGradeSaveSuccess() {
+                        $scope.users.forEach(function(user, index) {
+                            user.grades = $scope.selectedUsers[index].grades;
+                        });
+
+                        $scope.accessor.close();
+                    }
+
+                    function studentGradeSaveFail() {
+                        console.error('Failed to save student grades')
+                    }
 
                 }
             }

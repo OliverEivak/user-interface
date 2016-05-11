@@ -2,8 +2,8 @@
 
 angular.module('myApp.addLink', [])
 
-    .directive('addLink', ['$timeout', 'httpService', 'authenticationService',
-        function($timeout, httpService, authenticationService) {
+    .directive('addLink', ['$timeout', 'httpService', 'authenticationService', 'linkService',
+        function($timeout, httpService, authenticationService, linkService) {
             return {
                 scope: {
                     grade: '=',
@@ -21,36 +21,23 @@ angular.module('myApp.addLink', [])
                     init();
 
                     function init() {
-                        var params = {
-                            user: authenticationService.getUser().id,
-                            grade: $scope.grade.id
-                        };
-                        httpService.makeGet('rest/links', params, getLinkSuccess, getLinkFail);
+                        linkService.getLinkByGradeAndUser($scope.grade, authenticationService.getUser(), getLinkSuccess);
                     }
 
-                    function getLinkSuccess(data) {
-                        if (data && data.url) {
+                    function getLinkSuccess(response) {
+                        var data = response.data;
+                        if (data.url) {
                             console.log('got link ' + data.url);
                             $scope.addLinkForm.isVisible = false;
                             $scope.data.url = data.url;
+                            $scope.data.linkID = data.id;
                             $scope.hasLink = true;
-                        } else {
-                            getLinkFail();
                         }
-                    }
-
-                    function getLinkFail() {
-                        console.log('Failed to get link.')
                     }
 
                     // Add link
                     $scope.addLink = function() {
-                        var data = {
-                            url: $scope.addLinkForm.link,
-                            grade: $scope.grade.id
-                        };
-
-                        httpService.makePut('rest/links', data, addLinkSuccess, addLinkFail);
+                        linkService.add($scope.addLinkForm.link, $scope.grade, addLinkSuccess, addLinkFail);
                     };
 
                     $scope.toggleAddLinkForm = function() {
@@ -62,8 +49,8 @@ angular.module('myApp.addLink', [])
                         }
                     };
 
-                    function addLinkSuccess(data) {
-                        if (data) {
+                    function addLinkSuccess(response) {
+                        if (response.data) {
                             $scope.data.url = $scope.addLinkForm.link;
                             $scope.addLinkForm.link = null;
                             $scope.toggleAddLinkForm();
@@ -72,17 +59,12 @@ angular.module('myApp.addLink', [])
                     }
 
                     function addLinkFail() {
-                        console.log('Failed to add link');
+                        console.error('Failed to add link');
                     }
 
                     // Remove link
                     $scope.removeLink = function() {
-                        var data = {
-                            url: $scope.data.url,
-                            grade: $scope.grade.id
-                        };
-
-                        httpService.makeDelete('rest/links', data, removeLinkSuccess, removeLinkFail);
+                        linkService.remove($scope.data.url, $scope.grade, removeLinkSuccess, removeLinkFail);
                     };
 
                     function removeLinkSuccess() {
@@ -92,7 +74,7 @@ angular.module('myApp.addLink', [])
                     }
 
                     function removeLinkFail() {
-                        console.log('Failed to remove link');
+                        console.error('Failed to remove link');
                     }
 
 

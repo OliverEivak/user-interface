@@ -2,8 +2,8 @@
 
 angular.module('myApp.header', [])
 
-    .directive('header', ['$timeout', '$location', 'authenticationService',
-        function($timeout, $location, authenticationService) {
+    .directive('header', ['$timeout', '$location', 'authenticationService', 'logoutService',
+        function($timeout, $location, authenticationService, logoutService) {
             return {
                 scope: true,
                 templateUrl: 'view/header/header.html',
@@ -24,8 +24,7 @@ angular.module('myApp.header', [])
                     };
 
                     $scope.logout = function() {
-                        authenticationService.removeAuthentication();
-                        $location.url('/');
+                        logoutService.logout();
                     };
 
                     function getUsername() {

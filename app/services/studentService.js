@@ -1,24 +1,31 @@
 'use strict';
 
 angular.module('myApp.services.studentService', []).
-factory('studentService', ['services', 'httpService',
-    function (services, httpService) {
+factory('studentService', ['httpService',
+    function (httpService) {
 
-        var instance = {
-            getLinkByGrade: function(grade, student, callback) {
-                var params = {
-                    user: student.id,
-                    grade: grade.id
-                };
+        var service = {};
 
-                httpService.makeGet('rest/links', params, callback, getLinkFailed);
-            }
+        service.join = function (students, successCallback, errorCallback) {
+            httpService.makePost('/sis-api/students/join', students, function (response) {
+                if (response.data) {
+                    successCallback(response);
+                } else {
+                    errorCallback(response);
+                }
+            }, errorCallback);
         };
 
-        function getLinkFailed() {
-            console.log('failed to get link');
-        }
+        service.split = function (students, successCallback, errorCallback) {
+            httpService.makePost('/sis-api/students/split', students, function (response) {
+                if (response.data) {
+                    successCallback(response);
+                } else {
+                    errorCallback(response);
+                }
+            }, errorCallback);
+        };
 
-        return instance;
+        return service;
 
     }]);

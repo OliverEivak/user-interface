@@ -6,15 +6,13 @@
 <form name="formLogin">
     <div class="row">
         <div input-field class="col s12">
-            <input id="login-username" type="text" data-ng-model="loginForm.username"
-                   data-ng-keyup="$event.keyCode === 13 && login()" required="" aria-required="true">
+            <input id="login-username" type="text" data-ng-model="loginForm.username" required="" aria-required="true">
             <label for="login-username">Username</label>
         </div>
     </div>
     <div class="row">
         <div input-field class="col s12">
-            <input id="login-password" type="password" data-ng-model="loginForm.password"
-                   data-ng-keyup="$event.keyCode === 13 && login()" required="" aria-required="true">
+            <input id="login-password" type="password" data-ng-model="loginForm.password" required="" aria-required="true">
             <label for="login-password">Password</label>
         </div>
     </div>

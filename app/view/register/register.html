@@ -8,36 +8,41 @@
             <h5>Register</h5>
             <form name="formRegister">
                 <div class="row">
+                    <div input-field class="col s12 m12 l12">
+                        <div class="card-panel red lighten-2 valign-wrapper" data-ng-if="showRegisterError">
+                            <i class="small material-icons left md-light">error_outline</i>
+                            <span class="white-text">Could not register with this username and password.</span>
+                        </div>
+                    </div>
+                </div>
+                <div class="row">
                     <div input-field class="col s12 m12 l6">
                         <input id="register-username" type="text" class="validate" data-ng-model="registerForm.username"
-                               data-ng-keyup="$event.keyCode === 13 && submitForm()" required="" aria-required="true"
-                               length="32">
+                               required="" aria-required="true" length="32" autofocus>
                         <label for="register-username">Username</label>
                     </div>
                 </div>
                 <div class="row">
                     <div input-field class="col s12 m12 l6">
                         <input id="register-first-name" type="text" class="validate" data-ng-model="registerForm.firstName"
-                               data-ng-keyup="$event.keyCode === 13 && submitForm()" required="" aria-required="true"
-                               length="64">
+                               required="" aria-required="true" length="64">
                         <label for="register-first-name">First name</label>
                     </div>
                     <div input-field class="col s12 m12 l6">
                         <input id="register-last-name" type="text" class="validate" data-ng-model="registerForm.lastName"
-                               data-ng-keyup="$event.keyCode === 13 && submitForm()" required="" aria-required="true"
-                               length="64">
+                               required="" aria-required="true" length="64">
                         <label for="register-last-name">Last name</label>
                     </div>
                 </div>
                 <div class="row">
                     <div input-field class="col s12 m12 l6">
                         <input id="register-password" type="password" class="validate" data-ng-model="registerForm.password"
-                               data-ng-keyup="$event.keyCode === 13 && submitForm()" required="" aria-required="true">
+                               required="" aria-required="true">
                         <label for="register-password">Password</label>
                     </div>
                     <div input-field class="col s12 m12 l6">
                         <input id="register-password-repeated" type="password" class="validate" data-ng-model="registerForm.passwordRepeated"
-                               data-ng-keyup="$event.keyCode === 13 && submitForm()" required="" aria-required="true">
+                               required="" aria-required="true">
                         <label for="register-password-repeated" id="label-for-register-password-repeated">Password again</label>
                     </div>
                     <div class="right">

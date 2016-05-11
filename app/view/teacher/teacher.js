@@ -9,8 +9,8 @@ angular.module('myApp.teacher', ['ngRoute'])
         });
     }])
 
-    .controller('TeacherCtrl', ['$scope', '$rootScope', '$location', '$timeout', 'authenticationService', 'httpService',
-        function($scope, $rootScope, $location, $timeout, authenticationService, httpService) {
+    .controller('TeacherCtrl', ['$scope', '$rootScope', '$location', '$timeout', 'authenticationService', 'httpService', 'studentService',
+        function($scope, $rootScope, $location, $timeout, authenticationService, httpService, studentService) {
 
             $scope.isAuthenticated = authenticationService.isAuthenticated;
 
@@ -32,11 +32,18 @@ angular.module('myApp.teacher', ['ngRoute'])
                 studentSelectionChanged: studentSelectionChanged
             };
 
-            // Get grade groups
-            httpService.makeGet('rest/gradeGroups', {}, getGradeGroupsSuccess, getGradeGroupsFail);
+            init();
 
-            function getGradeGroupsSuccess(data) {
-                $scope.gradeGroups = data;
+            function init() {
+                // Get grade groups
+                httpService.makeGet('sis-api/gradeGroups', {}, getGradeGroupsSuccess, getGradeGroupsFail);
+
+                // Get students
+                httpService.makeGet('sis-api/students', {}, getStudentsSuccess, getStudentsFail);
+            }
+
+            function getGradeGroupsSuccess(response) {
+                $scope.gradeGroups = response.data;
 
                 if ($scope.studentGrades) {
                     calculateGradeGroupSums();
@@ -47,17 +54,16 @@ angular.module('myApp.teacher', ['ngRoute'])
                 console.log('Failed to get grade groups.');
             }
 
-            // Get students
-            httpService.makeGet('rest/students', {}, getStudentsSuccess, getStudentsFail);
-
-            function getStudentsSuccess(data) {
-                $scope.students = data;
+            function getStudentsSuccess(response) {
+                $scope.students = response.data;
                 resetPagination();
 
+                sortStudentsByGroups();
                 calculateStudentGroupColors();
+                showPage($scope.pagination.page);
 
                 // Get all grades
-                httpService.makeGet('rest/grades', {}, getStudentGradesSuccess, getStudentGradesFail);
+                httpService.makeGet('sis-api/studentGrades', {}, getStudentGradesSuccess, getStudentGradesFail);
             }
 
             function getStudentsFail() {
@@ -65,17 +71,18 @@ angular.module('myApp.teacher', ['ngRoute'])
             }
 
             // Add grades to student objects
-            function getStudentGradesSuccess(data) {
+            function getStudentGradesSuccess(response) {
+                var data = response.data;
                 if (data && data.length > 0) {
                     $scope.studentGrades = data;
 
                     // Collect grades by user
                     var studentGrades = [];
                     data.forEach(function(grade) {
-                        if (!studentGrades[grade.user]) {
-                            studentGrades[grade.user] = [grade];
+                        if (!studentGrades[grade.user.id]) {
+                            studentGrades[grade.user.id] = [grade];
                         } else {
-                            studentGrades[grade.user].push(grade);
+                            studentGrades[grade.user.id].push(grade);
                         }
                     });
 
@@ -131,7 +138,7 @@ angular.module('myApp.teacher', ['ngRoute'])
             function getGradeGroupByGrade(grade) {
                 for (var i = 0; i < $scope.gradeGroups.length; i++) {
                     for (var j = 0; j < $scope.gradeGroups[i].grades.length; j++) {
-                        if ($scope.gradeGroups[i].grades[j].id === grade) {
+                        if ($scope.gradeGroups[i].grades[j].id === grade.id) {
                             return $scope.gradeGroups[i];
                         }
                     }
@@ -170,14 +177,18 @@ angular.module('myApp.teacher', ['ngRoute'])
             }
 
             $scope.joinStudents = function() {
-                var groupID = getNextGroupID();
                 var students = getSelectedStudents();
 
                 if (students.length < 2)
                     return;
 
+                studentService.join(students, joinStudentsSuccess, joinStudentsFail);
+            };
+
+            function joinStudentsSuccess(response) {
+                var students = getSelectedStudents();
                 students.forEach(function(student) {
-                    student.studentGroup = groupID;
+                    student.studentGroup = response.data[0].studentGroup;
                 });
 
                 deleteSingleStudentGroups();
@@ -186,19 +197,31 @@ angular.module('myApp.teacher', ['ngRoute'])
                 clearStudentSelection();
 
                 showPage($scope.pagination.page);
-            };
+            }
+
+            function joinStudentsFail() {
+                console.error('Failed to join students into a group');
+            }
 
             $scope.splitStudents = function() {
                 var students = getSelectedStudents();
+                studentService.split(students, splitStudentsSuccess, splitStudentsFail);
+            };
 
+            function splitStudentsSuccess() {
+                var students = getSelectedStudents();
                 students.forEach(function(student) {
-                    student.studentGroup = null;
+                    student.studentGroup = 0;
                 });
 
                 deleteSingleStudentGroups();
                 calculateStudentGroupColors();
                 clearStudentSelection();
-            };
+            }
+
+            function splitStudentsFail() {
+                console.error('Failed to split student group');
+            }
 
             function getSelectedStudents() {
                 var selectedStudents = [];
@@ -216,17 +239,6 @@ angular.module('myApp.teacher', ['ngRoute'])
                 students.forEach(function(student) {
                     student.isSelected = true;
                 });
-            }
-
-            function getNextGroupID() {
-                var max = 1;
-
-                $scope.students.forEach(function(student) {
-                    if (student.studentGroup && student.studentGroup > max)
-                        max = student.studentGroup;
-                });
-
-                return max + 1;
             }
 
             function clearStudentSelection() {
@@ -286,8 +298,13 @@ angular.module('myApp.teacher', ['ngRoute'])
                 groups.forEach(function(group) {
                     if (group && group.length === 1) {
                         group[0].studentGroup = null;
+                        studentService.split([group[0]], function() {}, deleteSingleStudentGroupFail);
                     }
                 });
+            }
+
+            function deleteSingleStudentGroupFail() {
+                console.error('Failed to delete single student group')
             }
 
             // filter
@@ -341,6 +358,9 @@ angular.module('myApp.teacher', ['ngRoute'])
             };
 
             function resetPagination() {
+                if (!$scope.students)
+                    return;
+
                 $scope.matchingStudents = $scope.students;
                 $scope.visibleStudents = $scope.students.slice(0, Math.min($scope.pagination.pageSize, $scope.students.length));
                 $scope.visibleStudents2 = [];
@@ -358,7 +378,7 @@ angular.module('myApp.teacher', ['ngRoute'])
 
                 $scope.selectedGradeGroup = gradeGroup;
 
-                if (gradeGroup.isSolo) {
+                if (gradeGroup.solo) {
                     $scope.selectedUsers = [student];
                 } else {
                     $scope.selectedUsers = student.studentGroup ? getAllByStudentGroup(student.studentGroup) : [student];

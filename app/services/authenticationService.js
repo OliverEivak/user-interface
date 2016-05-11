@@ -1,8 +1,8 @@
 'use strict';
 
 angular.module('myApp.services.authenticationService', []).
-factory('authenticationService', ['services',
-    function (services) {
+factory('authenticationService', [
+    function () {
 
         var authenticationCallbacks = [];
 

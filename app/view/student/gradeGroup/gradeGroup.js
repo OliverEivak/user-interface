@@ -14,15 +14,24 @@ angular.module('myApp.studentGradeGroup', ['ngRoute'])
 
             $scope.isAuthenticated = authenticationService.isAuthenticated;
 
-            var userID = authenticationService.getUser().id;
+            init();
 
-            // Get grade groups
-            httpService.makeGet('rest/gradeGroups', {}, getGradeGroupsSuccess, getGradeGroupsFail);
+            function init() {
+                // Get grade groups
+                httpService.makeGet('sis-api/gradeGroups', {}, getGradeGroupsSuccess, getGradeGroupsFail);
 
-            function getGradeGroupsSuccess(data) {
-                for (var i = 0; i < data.length; i++) {
-                    if (String(data[i].id) === $routeParams.gradeGroup) {
-                        $scope.gradeGroup = data[i];
+                // Get student's grades
+                var params = {
+                    username:  authenticationService.getUser().username
+                };
+                httpService.makeGet('sis-api/studentGrades', params, getStudentGradesSuccess, getStudentGradesFail);
+            }
+
+            function getGradeGroupsSuccess(response) {
+                for (var i = 0; i < response.data.length; i++) {
+                    if (String(response.data[i].id) === $routeParams.gradeGroup) {
+                        $scope.gradeGroup = response.data[i];
+                        break;
                     }
                 }
 
@@ -32,24 +41,18 @@ angular.module('myApp.studentGradeGroup', ['ngRoute'])
             }
 
             function getGradeGroupsFail() {
-                console.log('Failed to get grade group.');
+                console.error('Failed to get grade group.');
             }
 
-            // Get student's grades
-            httpService.makeGet('rest/users/' + userID + '/grades', {}, getStudentGradesSuccess, getStudentGradesFail);
-
-            function getStudentGradesSuccess(data) {
-                $scope.studentGrades = data;
+            function getStudentGradesSuccess(response) {
+                $scope.studentGrades = response.data;
                 if ($scope.gradeGroup) {
                     addStudentGradesToGradeGroup();
                 }
             }
 
             function getStudentGradesFail() {
-                console.log('Failed to get grades.');
-
-                // just create empty grades
-                addStudentGradesToGradeGroup();
+                console.error('Failed to get grades.');
             }
 
             // Combine both
@@ -74,7 +77,7 @@ angular.module('myApp.studentGradeGroup', ['ngRoute'])
             function findStudentGradeByGradeGroupGrade(grade) {
                 if ($scope.studentGrades) {
                     for (var i = 0; i < $scope.studentGrades.length; i++) {
-                        if ($scope.studentGrades[i].grade === grade.id) {
+                        if ($scope.studentGrades[i].grade.id === grade.id) {
                             return $scope.studentGrades[i];
                         }
                     }

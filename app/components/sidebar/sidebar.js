@@ -2,8 +2,8 @@
 
 angular.module('myApp.sidebar', [])
 
-    .directive('sidebar', ['$timeout', '$location', '$routeParams', 'httpService',
-        function($timeout, $location, $routeParams, httpService) {
+    .directive('sidebar', ['$routeParams', 'httpService',
+        function($routeParams, httpService) {
             return {
                 scope: true,
                 templateUrl: 'components/sidebar/sidebar.html',
@@ -11,10 +11,10 @@ angular.module('myApp.sidebar', [])
 
                     $scope.data = {};
 
-                    httpService.makeGet('rest/gradeGroups', {}, getGradeGroupsSuccess, getGradeGroupsFail);
+                    httpService.makeGet('sis-api/gradeGroups', {}, getGradeGroupsSuccess, getGradeGroupsFail);
 
-                    function getGradeGroupsSuccess(data) {
-                        $scope.data.gradeGroups = data;
+                    function getGradeGroupsSuccess(response) {
+                        $scope.data.gradeGroups = response.data;
                     }
 
                     function getGradeGroupsFail() {
