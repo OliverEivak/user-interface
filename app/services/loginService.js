@@ -34,7 +34,7 @@ factory('loginService', ['$location', '$timeout', 'httpService', 'authentication
         function redirect(data) {
             $timeout(function () {
                 if (data.user.role === 'STUDENT') {
-                    $location.url('/student/gradeGroups/1');
+                    $location.url('/student/gradeGroups');
                 } else if (data.user.role === 'TEACHER') {
                     $location.url('/teacher');
                 }

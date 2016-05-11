@@ -10,7 +10,6 @@ var app = angular.module('myApp', [
     'myApp.login',
     'myApp.register',
     'myApp.header',
-    'myApp.sidebar',
     'myApp.studentGradeGroup',
     'myApp.addLink',
     'myApp.teacher',
@@ -35,7 +34,7 @@ app.run(['$rootScope', 'authenticationService', '$location', function($rootScope
                 return;
             } else {
                 event.preventDefault();
-                $location.url('/student/gradeGroups/1');
+                $location.url('/student/gradeGroups');
             }
         }
 

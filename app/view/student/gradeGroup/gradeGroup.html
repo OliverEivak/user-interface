@@ -6,7 +6,14 @@
 
     <!-- Logged in student view -->
     <div class="row" data-ng-if="isAuthenticated()">
-        <div class="col s12 m12 l3" sidebar></div>
+        <div class="col s12 m12 l3">
+            <div class="collection">
+                <a href="" data-ng-repeat="group in gradeGroups" data-ng-click="selectGradeGroup(group)" class="collection-item"
+                   data-ng-class="{active: group.id === gradeGroup.id}">
+                    {{group.name}}
+                </a>
+            </div>
+        </div>
 
         <div class="col s12 m12 l9">
             <div class="card">

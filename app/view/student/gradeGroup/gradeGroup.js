@@ -3,7 +3,7 @@
 angular.module('myApp.studentGradeGroup', ['ngRoute'])
 
     .config(['$routeProvider', function($routeProvider) {
-        $routeProvider.when('/student/gradeGroups/:gradeGroup', {
+        $routeProvider.when('/student/gradeGroups', {
             templateUrl: 'view/student/gradeGroup/gradeGroup.html',
             controller: 'StudentGradeGroupCtrl'
         });
@@ -28,11 +28,10 @@ angular.module('myApp.studentGradeGroup', ['ngRoute'])
             }
 
             function getGradeGroupsSuccess(response) {
-                for (var i = 0; i < response.data.length; i++) {
-                    if (String(response.data[i].id) === $routeParams.gradeGroup) {
-                        $scope.gradeGroup = response.data[i];
-                        break;
-                    }
+                $scope.gradeGroups = response.data;
+
+                if (response.data[0]) {
+                    $scope.gradeGroup = response.data[0];
                 }
 
                 if ($scope.studentGrades) {
@@ -80,6 +79,16 @@ angular.module('myApp.studentGradeGroup', ['ngRoute'])
                         if ($scope.studentGrades[i].grade.id === grade.id) {
                             return $scope.studentGrades[i];
                         }
+                    }
+                }
+            }
+
+            $scope.selectGradeGroup = function(gradeGroup) {
+                for (var i = 0; i < $scope.gradeGroups.length; i++) {
+                    if ($scope.gradeGroups[i].id === gradeGroup.id) {
+                        $scope.gradeGroup = $scope.gradeGroups[i];
+                        addStudentGradesToGradeGroup();
+                        break;
                     }
                 }
             }

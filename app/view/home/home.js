@@ -18,7 +18,7 @@ angular.module('myApp.home', ['ngRoute'])
             if ($scope.isAuthenticated()) {
                 var user = authenticationService.getUser();
                 if (user.role === 'STUDENT') {
-                    $location.url('/student/gradeGroups/1');
+                    $location.url('/student/gradeGroups');
                 } else if (user.role === 'TEACHER') {
                     $location.url('/teacher');
                 }
